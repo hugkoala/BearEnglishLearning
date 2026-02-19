@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 android {
     namespace = "com.bear.englishlearning"
     compileSdk = 35
@@ -20,6 +23,16 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "YOUTUBE_API_KEY", "\"AIzaSyCzP2kkKj-L8bVHr5EQbutfgCOL-lpCOC0\"")
+    }
+
+    applicationVariants.all {
+        val variant = this
+        val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+        variant.outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            output.outputFileName = "BearEnglishLearning-${variant.name}-v${variant.versionName}-$timestamp.apk"
+            true
+        }
     }
 
     buildTypes {

@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SlowMotionVideo
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -43,12 +44,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bear.englishlearning.data.local.entity.Sentence
+import com.bear.englishlearning.ui.components.BearIcon
 import com.bear.englishlearning.ui.theme.MatchGreen
 import java.util.Locale
 
 @Composable
 fun DailyTaskScreen(
     onNavigateToListening: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
     viewModel: DailyTaskViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -87,16 +90,36 @@ fun DailyTaskScreen(
             ) {
                 item {
                     Column {
-                        Text(
-                            text = "📅 今日任務",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                BearIcon(size = 36.dp)
+                                Text(
+                                    text = "今日任務",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            IconButton(onClick = onNavigateToSettings) {
+                                Icon(Icons.Default.Settings, contentDescription = "設定")
+                            }
+                        }
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "場景：${state.scenario.titleZh}（${state.scenario.title}）",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "每日任務：${state.sentences.size} / ${state.sentenceCount} 句",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

@@ -52,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bear.englishlearning.ui.components.BearIcon
 import com.bear.englishlearning.ui.theme.MatchGreen
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -173,7 +174,7 @@ private fun WelcomePage() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "🐻", fontSize = 80.sp)
+        BearIcon(size = 120.dp)
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "歡迎使用 Bear English",

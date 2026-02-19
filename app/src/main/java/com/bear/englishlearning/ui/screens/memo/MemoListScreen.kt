@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bear.englishlearning.data.local.entity.Memo
+import com.bear.englishlearning.ui.components.BearIcon
 import com.bear.englishlearning.ui.theme.MatchGreen
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -70,11 +71,17 @@ fun MemoListScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                Text(
-                    text = "📒 備忘錄",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    BearIcon(size = 32.dp)
+                    Text(
+                        text = "備忘錄",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             if (unreviewedCount > 0) {

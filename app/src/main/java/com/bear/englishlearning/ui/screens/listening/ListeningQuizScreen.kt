@@ -48,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.bear.englishlearning.ui.components.BearIcon
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bear.englishlearning.ui.components.SpeechDiffDisplay
@@ -102,11 +103,17 @@ fun ListeningQuizScreen(
     ) {
         // Header
         item {
-            Text(
-                text = "🎧 聽力測驗",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BearIcon(size = 32.dp)
+                Text(
+                    text = "聽力測驗",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             uiState.scenario?.let {
                 Text(
                     text = "${it.titleZh}（${it.title}）",

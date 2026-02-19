@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.bear.englishlearning.data.local.entity.DailyTask
 import com.bear.englishlearning.data.local.entity.Scenario
 import com.bear.englishlearning.data.local.entity.Sentence
+import com.bear.englishlearning.data.preferences.AppPreferences
 import com.bear.englishlearning.data.repository.DailyTaskRepository
 import com.bear.englishlearning.data.repository.ScenarioRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -20,7 +22,8 @@ sealed interface DailyTaskUiState {
     data class Success(
         val task: DailyTask,
         val scenario: Scenario,
-        val sentences: List<Sentence>
+        val sentences: List<Sentence>,
+        val sentenceCount: Int = 5
     ) : DailyTaskUiState
     data class Error(val message: String) : DailyTaskUiState
 }
@@ -28,7 +31,8 @@ sealed interface DailyTaskUiState {
 @HiltViewModel
 class DailyTaskViewModel @Inject constructor(
     private val scenarioRepository: ScenarioRepository,
-    private val dailyTaskRepository: DailyTaskRepository
+    private val dailyTaskRepository: DailyTaskRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<DailyTaskUiState>(DailyTaskUiState.Loading)
@@ -59,11 +63,14 @@ class DailyTaskViewModel @Inject constructor(
                 }
 
                 if (task != null) {
+                    val taskCount = appPreferences.dailyTaskCount.first()
                     val scenario = scenarioRepository.getScenarioById(task.scenarioId)
-                    val sentences = scenarioRepository.getSentencesForScenario(task.scenarioId)
+                    val sentences = scenarioRepository.getSentencesForScenarioLimited(
+                        task.scenarioId, taskCount
+                    )
 
                     if (scenario != null) {
-                        _uiState.value = DailyTaskUiState.Success(task, scenario, sentences)
+                        _uiState.value = DailyTaskUiState.Success(task, scenario, sentences, taskCount)
                     } else {
                         _uiState.value = DailyTaskUiState.Error("找不到場景資料")
                     }

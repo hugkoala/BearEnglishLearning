@@ -20,5 +20,8 @@ class ScenarioRepository @Inject constructor(
     suspend fun getSentencesForScenario(scenarioId: Long): List<Sentence> =
         scenarioDao.getSentencesForScenario(scenarioId)
 
+    suspend fun getSentencesForScenarioLimited(scenarioId: Long, limit: Int): List<Sentence> =
+        scenarioDao.getSentencesForScenarioLimited(scenarioId, limit)
+
     suspend fun getAllScenarios(): List<Scenario> = scenarioDao.getAllScenarios()
 }

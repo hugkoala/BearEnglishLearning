@@ -32,6 +32,7 @@ import com.bear.englishlearning.ui.screens.memo.MemoListScreen
 import com.bear.englishlearning.ui.screens.memo.MemoScreen
 import com.bear.englishlearning.ui.screens.onboarding.OnboardingScreen
 import com.bear.englishlearning.ui.screens.review.ReviewScreen
+import com.bear.englishlearning.ui.screens.settings.SettingsScreen
 
 sealed class Screen(val route: String, val label: String) {
     data object Onboarding : Screen("onboarding", "引導")
@@ -40,6 +41,7 @@ sealed class Screen(val route: String, val label: String) {
     data object MemoList : Screen("memo_list", "備忘錄")
     data object MemoCreate : Screen("memo_create", "新增備忘")
     data object Review : Screen("review", "複習")
+    data object Settings : Screen("settings", "設定")
 }
 
 private data class BottomNavItem(
@@ -122,6 +124,9 @@ private fun MainAppContent() {
                         navController.navigate(Screen.ListeningQuiz.route) {
                             launchSingleTop = true
                         }
+                    },
+                    onNavigateToSettings = {
+                        navController.navigate(Screen.Settings.route)
                     }
                 )
             }
@@ -139,6 +144,9 @@ private fun MainAppContent() {
             }
             composable(Screen.Review.route) {
                 ReviewScreen(onBack = { navController.popBackStack() })
+            }
+            composable(Screen.Settings.route) {
+                SettingsScreen(onBack = { navController.popBackStack() })
             }
         }
     }

@@ -3,7 +3,16 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- Left Ear -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M18,2H6c-1.1,0 -2,0.9 -2,2v16c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2V4c0,-1.1 -0.9,-2 -2,-2zM6,4h5v8l-2.5,-1.5L6,12V4z" />
+        android:pathData="M7,4.5m-2.8,0a2.8,2.8 0,1,1 5.6,0a2.8,2.8 0,1,1 -5.6,0" />
+    <!-- Right Ear -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M17,4.5m-2.8,0a2.8,2.8 0,1,1 5.6,0a2.8,2.8 0,1,1 -5.6,0" />
+    <!-- Head -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,12.5m-8,0a8,8 0,1,1 16,0a8,8 0,1,1 -16,0" />
 </vector>

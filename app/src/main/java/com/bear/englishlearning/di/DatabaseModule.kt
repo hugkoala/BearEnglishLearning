@@ -41,6 +41,7 @@ object DatabaseModule {
             "bear_english.db"
         )
             .addCallback(callback)
+            .fallbackToDestructiveMigration()
             .build()
     }
 

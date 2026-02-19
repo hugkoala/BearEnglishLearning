@@ -26,6 +26,9 @@ interface ScenarioDao {
     @Query("SELECT * FROM sentences WHERE scenarioId = :scenarioId ORDER BY orderIndex")
     suspend fun getSentencesForScenario(scenarioId: Long): List<Sentence>
 
+    @Query("SELECT * FROM sentences WHERE scenarioId = :scenarioId ORDER BY orderIndex LIMIT :limit")
+    suspend fun getSentencesForScenarioLimited(scenarioId: Long, limit: Int): List<Sentence>
+
     @Query("SELECT * FROM sentences WHERE sentenceId = :id")
     suspend fun getSentenceById(id: Long): Sentence?
 

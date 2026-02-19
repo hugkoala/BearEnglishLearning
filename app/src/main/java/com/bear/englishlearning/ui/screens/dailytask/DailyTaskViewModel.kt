@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -40,6 +41,21 @@ class DailyTaskViewModel @Inject constructor(
 
     init {
         loadTodayTask()
+        observeTaskCountChanges()
+    }
+
+    private fun observeTaskCountChanges() {
+        viewModelScope.launch {
+            appPreferences.dailyTaskCount.collectLatest { newCount ->
+                val current = _uiState.value
+                if (current is DailyTaskUiState.Success && current.sentenceCount != newCount) {
+                    val sentences = scenarioRepository.getSentencesForScenarioLimited(
+                        current.scenario.scenarioId, newCount
+                    )
+                    _uiState.value = current.copy(sentences = sentences, sentenceCount = newCount)
+                }
+            }
+        }
     }
 
     private fun loadTodayTask() {

@@ -20,7 +20,6 @@ import com.bear.englishlearning.domain.model.SpeechDiffResult
 import com.bear.englishlearning.domain.model.VideoResult
 import com.bear.englishlearning.domain.speech.WordDiffEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,8 +36,6 @@ data class ListeningQuizUiState(
     val selectedSentenceIndex: Int = 0,
     val isLoadingVideos: Boolean = false,
     val videoError: String? = null,
-    val videoPlayerError: Boolean = false,
-    val lastPlayerError: String? = null,
     val isListening: Boolean = false,
     val recognizedText: String = "",
     val diffResult: SpeechDiffResult? = null,
@@ -56,9 +53,6 @@ class ListeningQuizViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ListeningQuizUiState())
     val uiState: StateFlow<ListeningQuizUiState> = _uiState.asStateFlow()
-
-    // Blacklist video IDs that fail to play (embedding restricted, etc.)
-    private val blacklistedVideoIds = mutableSetOf<String>()
 
     init {
         loadScenario()
@@ -117,58 +111,15 @@ class ListeningQuizViewModel @Inject constructor(
         _uiState.update { it.copy(selectedSentenceIndex = index, diffResult = null, recognizedText = "") }
     }
 
-    fun onVideoError(errorName: String = "UNKNOWN") {
-        val state = _uiState.value
-        val failedVideo = state.videos.getOrNull(state.currentVideoIndex)
-        if (failedVideo != null) {
-            blacklistedVideoIds.add(failedVideo.videoId)
-            Log.w("ListeningVM", "Blacklisted video: ${failedVideo.videoId} (error=$errorName)")
-        }
-
-        // Find next non-blacklisted video
-        val nextIndex = ((state.currentVideoIndex + 1) until state.videos.size)
-            .firstOrNull { idx -> state.videos[idx].videoId !in blacklistedVideoIds }
-
-        Log.w("ListeningVM", "Video error '$errorName' at index ${state.currentVideoIndex}/${state.videos.size}, next=$nextIndex")
-
-        if (nextIndex != null) {
-            // Embedding errors (150/152) skip instantly; others wait briefly
-            val isEmbedError = errorName.contains("EMBED", ignoreCase = true) ||
-                    errorName.contains("PLAYABLE", ignoreCase = true)
-            val skipDelay = if (isEmbedError) 300L else 1500L
-
-            viewModelScope.launch {
-                delay(skipDelay)
-                _uiState.update {
-                    it.copy(
-                        currentVideoIndex = nextIndex,
-                        videoPlayerError = false,
-                        lastPlayerError = "影片 ${state.currentVideoIndex + 1} 無法播放（$errorName），嘗試下一部..."
-                    )
-                }
-            }
-        } else {
-            _uiState.update {
-                it.copy(
-                    videoPlayerError = true,
-                    lastPlayerError = "所有影片都無法播放（$errorName）\n請嘗試清除快取重試"
-                )
-            }
-        }
-    }
-
     fun clearCacheAndRetry() {
         viewModelScope.launch {
-            Log.d("ListeningVM", "Clearing cache and retrying (blacklisted=${blacklistedVideoIds.size})...")
-            blacklistedVideoIds.clear()
+            Log.d("ListeningVM", "Clearing cache and retrying...")
             youTubeRepository.clearCache()
             val query = _uiState.value.scenario?.youtubeQuery ?: return@launch
             _uiState.update {
                 it.copy(
                     currentVideoIndex = 0,
-                    videoPlayerError = false,
                     videoError = null,
-                    lastPlayerError = null,
                     videos = emptyList()
                 )
             }
@@ -180,9 +131,7 @@ class ListeningQuizViewModel @Inject constructor(
         val state = _uiState.value
         val nextIndex = state.currentVideoIndex + 1
         if (nextIndex < state.videos.size) {
-            _uiState.update {
-                it.copy(currentVideoIndex = nextIndex, videoPlayerError = false)
-            }
+            _uiState.update { it.copy(currentVideoIndex = nextIndex) }
         }
     }
 
@@ -190,7 +139,7 @@ class ListeningQuizViewModel @Inject constructor(
         val state = _uiState.value
         if (state.currentVideoIndex > 0) {
             _uiState.update {
-                it.copy(currentVideoIndex = state.currentVideoIndex - 1, videoPlayerError = false)
+                it.copy(currentVideoIndex = state.currentVideoIndex - 1)
             }
         }
     }

@@ -1,9 +1,12 @@
 package com.bear.englishlearning.ui.screens.listening
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,21 +20,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.SlowMotionVideo
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,17 +52,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bear.englishlearning.ui.components.BearIcon
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bear.englishlearning.ui.components.SpeechDiffDisplay
-import com.bear.englishlearning.ui.components.YouTubePlayerComposable
 import com.bear.englishlearning.ui.theme.MissingRed
 import java.util.Locale
 
@@ -128,7 +137,7 @@ fun ListeningQuizScreen(
             }
         }
 
-        // YouTube Player
+        // YouTube Video Thumbnails
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -147,26 +156,93 @@ fun ListeningQuizScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .aspectRatio(16f / 9f),
+                                    .height(120.dp),
                                 contentAlignment = Alignment.Center
                             ) { CircularProgressIndicator() }
                         }
-                        uiState.videos.isNotEmpty() && !uiState.videoPlayerError -> {
+                        uiState.videos.isNotEmpty() -> {
                             val currentVideo = uiState.videos[uiState.currentVideoIndex]
-                            YouTubePlayerComposable(
-                                videoId = currentVideo.videoId,
+                            val thumbnailUrl = currentVideo.thumbnailUrl.ifEmpty {
+                                "https://img.youtube.com/vi/${currentVideo.videoId}/mqdefault.jpg"
+                            }
+
+                            // Clickable thumbnail
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .aspectRatio(16f / 9f),
-                                onError = { error -> viewModel.onVideoError(error.name) }
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        val intent = Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse("https://www.youtube.com/watch?v=${currentVideo.videoId}")
+                                        )
+                                        context.startActivity(intent)
+                                    }
+                            ) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(context)
+                                        .data(thumbnailUrl)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = currentVideo.title,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(16f / 9f)
+                                        .clip(RoundedCornerShape(8.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+
+                                // Play button overlay
+                                Icon(
+                                    imageVector = Icons.Default.PlayCircle,
+                                    contentDescription = "播放影片",
+                                    modifier = Modifier
+                                        .size(56.dp)
+                                        .align(Alignment.Center),
+                                    tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Video title
                             Text(
                                 text = currentVideo.title,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 2
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
                             )
+
+                            // Channel name
+                            Text(
+                                text = currentVideo.channelTitle,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            // Open in YouTube button
+                            FilledTonalButton(
+                                onClick = {
+                                    val intent = Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse("https://www.youtube.com/watch?v=${currentVideo.videoId}")
+                                    )
+                                    context.startActivity(intent)
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Icon(
+                                    Icons.Default.OpenInNew,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("在 YouTube 中觀看")
+                            }
+
                             // Video navigation
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -194,43 +270,12 @@ fun ListeningQuizScreen(
                                     Icon(Icons.Default.Refresh, "重新載入")
                                 }
                             }
-                            // Show auto-skip status
-                            uiState.lastPlayerError?.let {
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        }
-                        uiState.videoPlayerError -> {
-                            Column(
-                                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(
-                                    text = "⚠️ 所有影片都無法播放",
-                                    color = MaterialTheme.colorScheme.error,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                uiState.lastPlayerError?.let {
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Button(onClick = { viewModel.clearCacheAndRetry() }) {
-                                    Icon(Icons.Default.Refresh, contentDescription = null)
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("清除快取並重試")
-                                }
-                            }
                         }
                         uiState.videoError != null -> {
                             Column(
-                                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
@@ -380,7 +425,7 @@ fun ListeningQuizScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = if (uiState.isListening) "正在聆聽..." else if (!hasMicPermission) "需要麥克風權限" else "按下麥克風開始說話",
+                        text = if (uiState.isListening) "正在聆聰..." else if (!hasMicPermission) "需要麥克風權限" else "按下麥克風開始說話",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

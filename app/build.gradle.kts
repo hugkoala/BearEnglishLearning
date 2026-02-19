@@ -111,8 +111,8 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.moshi.kotlin)
 
-    // YouTube Player
-    implementation(libs.youtube.player)
+    // Coil (Image Loading)
+    implementation(libs.coil.compose)
 
     // Testing
     testImplementation(libs.junit)

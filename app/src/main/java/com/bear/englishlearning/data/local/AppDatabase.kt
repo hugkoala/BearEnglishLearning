@@ -28,7 +28,7 @@ import com.bear.englishlearning.data.local.entity.Sentence
         Conversation::class,
         ConversationLine::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

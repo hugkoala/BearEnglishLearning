@@ -441,179 +441,299 @@ object SeedData {
         ConversationLine(2, 1, "B", "Sure! Right this way. Here's your menu.", "好的！這邊請。這是你的菜單。", "'right this way' 是服務業常用語", 2),
         ConversationLine(3, 1, "A", "Thank you. What do you recommend?", "謝謝。你推薦什麼？", "'recommend' 重音在第三音節", 3),
         ConversationLine(4, 1, "B", "Our grilled salmon is very popular today.", "我們的烤鮭魚今天很受歡迎。", "'salmon' 的 l 不發音 /ˈsæmən/", 4),
+        ConversationLine(121, 1, "A", "That sounds delicious. I'll have that, please.", "聽起來很好吃。我要那個，謝謝。", "'I'll have' 是點餐常用表達", 5),
+        ConversationLine(122, 1, "B", "Great choice! And what would you like to drink?", "好選擇！你想喝什麼？", "'would you like' 是禮貌問句", 6),
+        ConversationLine(123, 1, "A", "Just water for now, thanks.", "先來杯水就好，謝謝。", "'for now' 表示暫時", 7),
+        ConversationLine(124, 1, "B", "Sure thing. Your food will be ready in about ten minutes.", "沒問題。你的餐點大約十分鐘好。", "'sure thing' 是口語化的「沒問題」", 8),
 
         // 2. Buying a Shirt
         ConversationLine(5, 2, "A", "Excuse me, how much is this blue shirt?", "不好意思，這件藍色襯衫多少錢？", "'how much' 是詢問價格的常用句", 1),
         ConversationLine(6, 2, "B", "It's thirty dollars. Would you like to try it on?", "三十美元。你想試穿嗎？", "'try it on' 是片語動詞", 2),
         ConversationLine(7, 2, "A", "Yes, please. Where's the fitting room?", "好，謝謝。試衣間在哪裡？", "'fitting room' 重音在 'fitting'", 3),
         ConversationLine(8, 2, "B", "It's right over there, next to the cashier.", "就在那邊，收銀台旁邊。", "'cashier' 重音在第二音節 /kæˈʃɪr/", 4),
+        ConversationLine(125, 2, "A", "It fits perfectly! I'll take it.", "很合身！我買了。", "'fits perfectly' 表示非常合身", 5),
+        ConversationLine(126, 2, "B", "Wonderful! Would you like a bag for it?", "太好了！需要袋子嗎？", "'would you like' 是禮貌詢問", 6),
+        ConversationLine(127, 2, "A", "Yes, please. Can I pay by credit card?", "好的。可以刷信用卡嗎？", "'pay by' 後接付款方式", 7),
+        ConversationLine(128, 2, "B", "Of course! Just tap or insert your card here.", "當然！在這裡感應或插入你的卡。", "'tap or insert' 是現代支付用語", 8),
 
         // 3. Finding the Museum
         ConversationLine(9, 3, "A", "Excuse me, how do I get to the art museum?", "不好意思，我怎麼去美術館？", "'museum' 重音在第二音節 /mjuˈziːəm/", 1),
         ConversationLine(10, 3, "B", "Go straight for two blocks, then turn left.", "直走兩個街區，然後左轉。", "'blocks' 注意 /blɒks/ 的結尾子音群", 2),
         ConversationLine(11, 3, "A", "Is it far? Can I walk there?", "遠嗎？我可以走路嗎？", "'walk there' 自然連讀", 3),
         ConversationLine(12, 3, "B", "It's about ten minutes on foot. You can't miss it!", "走路大約十分鐘。你不會錯過的！", "'on foot' 是固定搭配表示步行", 4),
+        ConversationLine(129, 3, "A", "Great. What time does it close?", "太好了。幾點關門？", "'what time' 是問時間的基本句型", 5),
+        ConversationLine(130, 3, "B", "It closes at five PM. Admission is free on Sundays.", "下午五點關門。週日免費入場。", "'admission' 重音在第二音節 /ədˈmɪʃən/", 6),
+        ConversationLine(131, 3, "A", "Oh, that's wonderful! Is there a gift shop inside?", "太棒了！裡面有紀念品店嗎？", "'gift shop' 是複合名詞", 7),
+        ConversationLine(132, 3, "B", "Yes, it's on the first floor near the exit. Enjoy your visit!", "有，在一樓靠近出口。祝參觀愉快！", "'enjoy your visit' 是常見祝語", 8),
 
         // 4. Checking In for a Flight
         ConversationLine(13, 4, "A", "Hi, I'd like to check in for my flight to Tokyo.", "嗨，我要辦理飛往東京的登機手續。", "'check in' 是片語動詞", 1),
         ConversationLine(14, 4, "B", "May I see your passport, please?", "請出示您的護照好嗎？", "'passport' 重音在第一音節", 2),
         ConversationLine(15, 4, "A", "Here you go. Can I get a window seat?", "給你。我可以坐靠窗位嗎？", "'window seat' 重音在 'window'", 3),
         ConversationLine(16, 4, "B", "Of course. Your gate is B12. Boarding starts at 3 PM.", "當然。你的登機門是 B12。下午三點開始登機。", "'boarding' 注意 /ˈbɔːrdɪŋ/ 的發音", 4),
+        ConversationLine(133, 4, "A", "Do I need to go through security first?", "我需要先過安檢嗎？", "'go through' 表示通過", 5),
+        ConversationLine(134, 4, "B", "Yes, security is right around the corner.", "是的，安檢就在轉角。", "'right around the corner' 表示就在附近", 6),
+        ConversationLine(135, 4, "A", "Thank you. Is there a lounge nearby?", "謝謝。附近有貴賓室嗎？", "'lounge' 注意 /laʊndʒ/ 的發音", 7),
+        ConversationLine(136, 4, "B", "Yes, there's one past security on your left. Have a nice flight!", "有，過安檢後左手邊。祝旅途愉快！", "'have a nice flight' 是機場常見祝語", 8),
 
         // 5. Hotel Check-In
         ConversationLine(17, 5, "A", "Good evening. I have a reservation under the name Lee.", "晚安。我有預訂，名字是 Lee。", "'under the name' 是預訂的固定表達", 1),
         ConversationLine(18, 5, "B", "Welcome, Mr. Lee! You're in room 405. Here's your key.", "歡迎，李先生！你在 405 號房。這是你的鑰匙。", "'key' 注意 /kiː/ 的長母音", 2),
         ConversationLine(19, 5, "A", "Great. Is breakfast included?", "太好了。有含早餐嗎？", "'included' 注意 /ɪnˈkluːdɪd/ 三音節", 3),
         ConversationLine(20, 5, "B", "Yes, from 7 to 10 AM on the second floor.", "有，早上 7 點到 10 點在二樓。", "'second floor' 重音在 'second'", 4),
+        ConversationLine(137, 5, "A", "Is there free Wi-Fi in the room?", "房間有免費 Wi-Fi 嗎？", "'Wi-Fi' 兩個音節都重讀", 5),
+        ConversationLine(138, 5, "B", "Yes, the password is on the card in your room.", "有，密碼在房間裡的卡片上。", "'password' 複合詞重音在 'pass'", 6),
+        ConversationLine(139, 5, "A", "Perfect. What time is checkout?", "好的。退房時間是幾點？", "'checkout' 複合詞重音在 'check'", 7),
+        ConversationLine(140, 5, "B", "Checkout is at noon. Enjoy your stay!", "中午退房。祝住宿愉快！", "'enjoy your stay' 是飯店常見祝語", 8),
 
         // 6. Visiting the Doctor
         ConversationLine(21, 6, "A", "Doctor, I've had a bad headache for three days.", "醫生，我頭痛了三天。", "'headache' 是複合詞，重音在 'head'", 1),
         ConversationLine(22, 6, "B", "I see. Do you have any other symptoms?", "了解。你有其他症狀嗎？", "'symptoms' 重音在第一音節 /ˈsɪmptəmz/", 2),
         ConversationLine(23, 6, "A", "I also feel dizzy and a bit tired.", "我也覺得頭暈，有點累。", "'dizzy' 注意 /ˈdɪzi/ 的短母音", 3),
         ConversationLine(24, 6, "B", "Let me check your blood pressure. Please sit down.", "讓我量一下血壓。請坐。", "'blood pressure' 重音在 'blood'", 4),
+        ConversationLine(141, 6, "A", "Is it serious? Should I be worried?", "嚴重嗎？我需要擔心嗎？", "'serious' 重音在第一音節 /ˈsɪriəs/", 5),
+        ConversationLine(142, 6, "B", "Your blood pressure is a little high. I'll prescribe some medicine.", "你的血壓有點高。我開些藥給你。", "'prescribe' 重音在第二音節 /prɪˈskraɪb/", 6),
+        ConversationLine(143, 6, "A", "How often should I take it?", "我多久吃一次？", "'how often' 問頻率的固定句型", 7),
+        ConversationLine(144, 6, "B", "Twice a day, after meals. Come back in a week if it doesn't improve.", "一天兩次，飯後。如果沒改善一週後回診。", "'after meals' 是服藥指示常見用語", 8),
 
         // 7. Grocery Shopping
         ConversationLine(25, 7, "A", "Excuse me, where can I find the eggs?", "不好意思，雞蛋在哪裡？", "'eggs' 注意 /ɛɡz/ 的結尾", 1),
         ConversationLine(26, 7, "B", "They're in aisle three, next to the dairy section.", "在第三走道，乳製品區旁邊。", "'aisle' 注意 s 不發音 /aɪl/", 2),
         ConversationLine(27, 7, "A", "Thanks! Do you have any organic options?", "謝謝！有有機的選項嗎？", "'organic' 重音在第二音節", 3),
         ConversationLine(28, 7, "B", "Yes, the organic ones are on the top shelf.", "有，有機的在最上層架子。", "'shelf' 注意 /ʃɛlf/ 的發音", 4),
+        ConversationLine(145, 7, "A", "Do you know if they're on sale today?", "你知道今天有特價嗎？", "'on sale' 表示特價中", 5),
+        ConversationLine(146, 7, "B", "Let me check... Yes, buy one get one free!", "讓我查一下…有，買一送一！", "'buy one get one free' 是促銷常見表達", 6),
+        ConversationLine(147, 7, "A", "Great deal! I'll take two cartons then.", "太划算了！那我買兩盒。", "'carton' 指紙盒裝 /ˈkɑːrtən/", 7),
+        ConversationLine(148, 7, "B", "The checkout counter is at the front. Have a nice day!", "結帳櫃台在前面。祝你有美好的一天！", "'checkout counter' 是超市結帳區", 8),
 
         // 8. Taking a Cab
         ConversationLine(29, 8, "A", "Hi, can you take me to the train station?", "嗨，可以載我到火車站嗎？", "'take me to' 連讀", 1),
         ConversationLine(30, 8, "B", "Sure, hop in. It'll take about fifteen minutes.", "好，上車。大約十五分鐘。", "'hop in' 表示上車的口語表達", 2),
         ConversationLine(31, 8, "A", "Great. Can you take the fastest route?", "太好了。可以走最快的路嗎？", "'fastest' 最高級 /ˈfæstɪst/", 3),
         ConversationLine(32, 8, "B", "No problem. That'll be twelve dollars.", "沒問題。車費十二美元。", "'dollars' 注意 /ˈdɒlərz/ 的發音", 4),
+        ConversationLine(149, 8, "A", "Can I pay with a credit card?", "可以刷信用卡嗎？", "'pay with' 後接付款工具", 5),
+        ConversationLine(150, 8, "B", "Sorry, cash only. There's an ATM around the corner.", "抱歉，只收現金。轉角有 ATM。", "'cash only' 表示只收現金", 6),
+        ConversationLine(151, 8, "A", "Okay, no worries. Here's fifteen. Keep the change.", "好，沒關係。給你十五。不用找了。", "'keep the change' 是給小費的常見說法", 7),
+        ConversationLine(152, 8, "B", "Thanks a lot! Have a good day!", "非常感謝！祝你有美好的一天！", "'thanks a lot' 比 thank you 更口語", 8),
 
         // 9. Opening a Bank Account
         ConversationLine(33, 9, "A", "Hello, I'd like to open a savings account.", "你好，我想開一個儲蓄帳戶。", "'savings account' 重音在 'savings'", 1),
         ConversationLine(34, 9, "B", "Sure. Do you have your ID with you?", "好的。你有帶身份證嗎？", "'ID' 注意每個字母分開讀", 2),
         ConversationLine(35, 9, "A", "Yes, here it is. What's the minimum deposit?", "有，在這裡。最低存款是多少？", "'minimum' 重音在第一音節 /ˈmɪnɪməm/", 3),
         ConversationLine(36, 9, "B", "The minimum is one hundred dollars. Let me set it up for you.", "最低一百美元。我來幫你設定。", "'set it up' 三詞連讀", 4),
+        ConversationLine(153, 9, "A", "What's the interest rate for savings?", "儲蓄的利率是多少？", "'interest rate' 重音在 'interest'", 5),
+        ConversationLine(154, 9, "B", "Currently it's two point five percent annually.", "目前年利率是百分之二點五。", "'annually' 重音在第一音節 /ˈænjuəli/", 6),
+        ConversationLine(155, 9, "A", "Can I also set up online banking?", "我可以同時開通網路銀行嗎？", "'set up' 表示設定、建立", 7),
+        ConversationLine(156, 9, "B", "Absolutely! I'll help you download the app right now.", "當然！我現在幫你下載 App。", "'absolutely' 表示完全同意 /ˌæbsəˈluːtli/", 8),
 
         // 10. Making a Phone Call
         ConversationLine(37, 10, "A", "Hello, may I speak to Dr. Chen, please?", "你好，請問陳醫師在嗎？", "'may I speak to' 是正式電話用語", 1),
         ConversationLine(38, 10, "B", "I'm sorry, he's in a meeting right now. Can I take a message?", "抱歉，他正在開會。需要留言嗎？", "'take a message' 是固定搭配", 2),
         ConversationLine(39, 10, "A", "Yes, please tell him to call me back at 0912-345-678.", "好，請轉告他回電 0912-345-678。", "'call me back' 是片語動詞", 3),
         ConversationLine(40, 10, "B", "Got it. I'll pass along the message. Goodbye!", "了解，我會轉達。再見！", "'pass along' 表示傳達", 4),
+        ConversationLine(157, 10, "A", "Oh wait, one more thing. When will the meeting end?", "等一下，還有一件事。會議什麼時候結束？", "'one more thing' 是常見補充用語", 5),
+        ConversationLine(158, 10, "B", "It should be done by three o'clock.", "應該三點結束。", "'should be done by' 表示預計完成時間", 6),
+        ConversationLine(159, 10, "A", "Great, I'll try calling again after three then.", "好，那我三點後再打。", "'try calling again' 注意 try + V-ing", 7),
+        ConversationLine(160, 10, "B", "Sounds good. I'll let him know you called. Bye!", "好的。我會告訴他你來電過。再見！", "'let him know' 是常用表達", 8),
 
         // 11. At the Coffee Shop
         ConversationLine(41, 11, "A", "Hi, I'd like a medium iced latte, please.", "嗨，我要一杯中杯冰拿鐵。", "'iced latte' 重音在 'iced'", 1),
         ConversationLine(42, 11, "B", "Sure. Would you like regular or oat milk?", "好的。你要一般牛奶還是燕麥奶？", "'regular' 重音在第一音節 /ˈrɛɡjʊlər/", 2),
         ConversationLine(43, 11, "A", "Oat milk, please. And can I get less sugar?", "燕麥奶，謝謝。可以少糖嗎？", "'less sugar' 連讀", 3),
         ConversationLine(44, 11, "B", "Of course! That'll be five fifty. For here or to go?", "當然！五塊五。內用還是外帶？", "'for here or to go' 是美式用法", 4),
+        ConversationLine(161, 11, "A", "To go, please. Do you have any pastries?", "外帶，謝謝。有糕點嗎？", "'pastries' 注意 /ˈpeɪstriz/ 的發音", 5),
+        ConversationLine(162, 11, "B", "Yes! Our blueberry muffins are freshly baked.", "有！我們的藍莓馬芬是剛出爐的。", "'freshly baked' 表示剛烘焙的", 6),
+        ConversationLine(163, 11, "A", "I'll have one of those too. How much altogether?", "那我也要一個。總共多少？", "'altogether' 表示總共 /ˌɔːltəˈɡɛðər/", 7),
+        ConversationLine(164, 11, "B", "That'll be nine dollars even. Here's your receipt!", "剛好九美元。這是你的收據！", "'nine dollars even' 表示整數金額", 8),
 
         // 12. Mailing a Package
         ConversationLine(45, 12, "A", "I'd like to send this package to Japan.", "我想寄這個包裹到日本。", "'package' 重音在第一音節", 1),
         ConversationLine(46, 12, "B", "How would you like to send it? Regular or express?", "你想怎麼寄？普通還是快遞？", "'express' 重音在第二音節", 2),
         ConversationLine(47, 12, "A", "Express, please. How long will it take?", "快遞，謝謝。要多久？", "'how long' 是常用問句", 3),
         ConversationLine(48, 12, "B", "About three to five business days. That'll be twenty-five dollars.", "大約三到五個工作天。二十五美元。", "'business days' 指工作日", 4),
+        ConversationLine(165, 12, "A", "Do I need to fill out a customs form?", "我需要填海關申報單嗎？", "'customs form' 是國際郵寄必填表格", 5),
+        ConversationLine(166, 12, "B", "Yes, please list the contents and their value.", "是的，請列出內容物和價值。", "'contents' 重音在第一音節 /ˈkɒntɛnts/", 6),
+        ConversationLine(167, 12, "A", "Done. Can I also add insurance for the package?", "好了。我可以加保險嗎？", "'insurance' 重音在第二音節 /ɪnˈʃʊrəns/", 7),
+        ConversationLine(168, 12, "B", "Sure, that's an extra five dollars. Here's your tracking number.", "好，加五美元。這是你的追蹤號碼。", "'tracking number' 是包裹追蹤用語", 8),
 
         // 13. Joining a Gym
         ConversationLine(49, 13, "A", "Hi, I'm interested in joining the gym.", "嗨，我有興趣加入健身房。", "'interested in' 後接名詞或動名詞", 1),
         ConversationLine(50, 13, "B", "Great! We have monthly and annual plans. Which do you prefer?", "太好了！我們有月費和年費方案。你偏好哪種？", "'annual' 重音在第一音節 /ˈænjuəl/", 2),
         ConversationLine(51, 13, "A", "What's included in the monthly plan?", "月費方案包含什麼？", "'included' 注意 /ɪnˈkluːdɪd/", 3),
         ConversationLine(52, 13, "B", "You get full access to equipment and group classes.", "你可以使用所有設備和團體課。", "'equipment' 重音在第二音節 /ɪˈkwɪpmənt/", 4),
+        ConversationLine(169, 13, "A", "Are there personal trainers available?", "有私人教練嗎？", "'personal trainer' 重音在 'personal'", 5),
+        ConversationLine(170, 13, "B", "Yes, but personal training sessions are extra.", "有，但私人訓練課程需要額外付費。", "'extra' 表示額外的 /ˈɛkstrə/", 6),
+        ConversationLine(171, 13, "A", "I'll start with the monthly plan for now.", "我先從月費方案開始。", "'for now' 表示暫時先這樣", 7),
+        ConversationLine(172, 13, "B", "Perfect! Let me show you around the facility.", "好的！讓我帶你參觀設施。", "'show you around' 表示帶人參觀", 8),
 
         // 14. Meeting Someone New
         ConversationLine(53, 14, "A", "Hi! I'm Sarah. I just moved here from Canada.", "嗨！我是 Sarah。我剛從加拿大搬來。", "'moved' 注意 /muːvd/ 過去式", 1),
         ConversationLine(54, 14, "B", "Welcome, Sarah! I'm Tom. What brings you here?", "歡迎，Sarah！我是 Tom。什麼原因來這裡的？", "'what brings you' 是常用問句", 2),
         ConversationLine(55, 14, "A", "I got a new job at the tech company downtown.", "我在市中心的科技公司找到新工作。", "'downtown' 重音在第二音節", 3),
         ConversationLine(56, 14, "B", "That's awesome! Let me know if you need any help settling in.", "太棒了！如果需要幫忙安頓就告訴我。", "'settling in' 表示安頓下來", 4),
+        ConversationLine(173, 14, "A", "Thanks, that's really kind of you! Do you know any good restaurants nearby?", "謝謝，你真好！你知道附近有什麼好餐廳嗎？", "'that's really kind of you' 表示感謝對方的好意", 5),
+        ConversationLine(174, 14, "B", "There's a great Italian place two blocks from here.", "這裡走兩個街區有一家很棒的義大利餐廳。", "'two blocks from here' 表示距離", 6),
+        ConversationLine(175, 14, "A", "Sounds perfect! Maybe we can grab lunch together sometime.", "聽起來很棒！也許我們可以找時間一起吃午餐。", "'grab lunch' 是口語化的「吃午餐」", 7),
+        ConversationLine(176, 14, "B", "I'd love that! Here's my number. Let's keep in touch!", "我很樂意！這是我的電話。保持聯繫！", "'keep in touch' 表示保持聯絡", 8),
 
         // 15. At the Library
         ConversationLine(57, 15, "A", "Hi, I'm looking for books on photography.", "嗨，我在找攝影的書。", "'photography' 重音在第二音節", 1),
         ConversationLine(58, 15, "B", "They're in the arts section on the third floor.", "在三樓的藝術區。", "'section' 重音在第一音節 /ˈsɛkʃən/", 2),
         ConversationLine(59, 15, "A", "Can I borrow up to five books at a time?", "我一次最多可以借五本嗎？", "'borrow' 重音在第一音節", 3),
         ConversationLine(60, 15, "B", "Yes, and you can keep them for two weeks.", "可以，可以借兩週。", "'keep them' 連讀為 /kiːpðəm/", 4),
+        ConversationLine(177, 15, "A", "What happens if I return them late?", "如果我遲還會怎樣？", "'return them late' 表示逾期歸還", 5),
+        ConversationLine(178, 15, "B", "There's a small fine of fifty cents per day.", "每天罰款五十美分。", "'fine' 這裡指罰款 /faɪn/", 6),
+        ConversationLine(179, 15, "A", "Can I renew them online if I need more time?", "如果需要更多時間可以線上續借嗎？", "'renew' 重音在第二音節 /rɪˈnjuː/", 7),
+        ConversationLine(180, 15, "B", "Yes, you can renew up to two times on our website.", "可以，你可以在我們網站上續借最多兩次。", "'up to' 表示最多", 8),
 
         // 16. Talking About Weather
         ConversationLine(61, 16, "A", "Wow, it's really hot today, isn't it?", "哇，今天好熱，對吧？", "'isn't it' 是附加問句的常用形式", 1),
         ConversationLine(62, 16, "B", "Yeah, the forecast says it'll be even hotter tomorrow.", "對呀，天氣預報說明天會更熱。", "'forecast' 重音在第一音節", 2),
         ConversationLine(63, 16, "A", "I hope it rains this weekend. We need it!", "我希望週末下雨。我們需要雨！", "'hope' 後接 that 子句（常省略）", 3),
         ConversationLine(64, 16, "B", "Me too. Don't forget to stay hydrated!", "我也是。別忘了多喝水！", "'hydrated' 重音在第一音節 /ˈhaɪdreɪtɪd/", 4),
+        ConversationLine(181, 16, "A", "I heard there might be a typhoon next week.", "我聽說下週可能有颱風。", "'typhoon' 重音在第二音節 /taɪˈfuːn/", 5),
+        ConversationLine(182, 16, "B", "Really? We should probably stock up on supplies.", "真的嗎？我們也許應該囤點物資。", "'stock up on' 表示囤貨", 6),
+        ConversationLine(183, 16, "A", "Good idea. I'll get some water and snacks later.", "好主意。我晚點去買些水和零食。", "'later' 注意 /ˈleɪtər/ 的發音", 7),
+        ConversationLine(184, 16, "B", "Stay safe! Let me know if you need anything.", "注意安全！有需要什麼就告訴我。", "'stay safe' 是常見關心用語", 8),
 
         // 17. Buying Movie Tickets
         ConversationLine(65, 17, "A", "Two tickets for the eight o'clock show, please.", "請給我兩張八點場的票。", "'o'clock' 注意連讀 /əˈklɒk/", 1),
         ConversationLine(66, 17, "B", "Which movie? We have an action film and a comedy.", "哪部電影？我們有動作片和喜劇。", "'comedy' 重音在第一音節 /ˈkɒmədi/", 2),
         ConversationLine(67, 17, "A", "The action film, please. Are there any good seats left?", "動作片，謝謝。還有好位子嗎？", "'seats left' 表示剩餘座位", 3),
         ConversationLine(68, 17, "B", "Yes, row F in the middle is available. Enjoy the movie!", "有，F 排中間的可以。祝觀影愉快！", "'available' 重音在第二音節 /əˈveɪləbəl/", 4),
+        ConversationLine(185, 17, "A", "Can we also get a large popcorn and two sodas?", "我們也可以要一大份爆米花和兩杯汽水嗎？", "'popcorn' 複合詞重音在 'pop'", 5),
+        ConversationLine(186, 17, "B", "Of course! Would you like butter on the popcorn?", "當然！爆米花要加奶油嗎？", "'butter' 注意 /ˈbʌtər/ 的短母音", 6),
+        ConversationLine(187, 17, "A", "Yes, extra butter please!", "好，多加奶油！", "'extra' 表示額外的", 7),
+        ConversationLine(188, 17, "B", "Here you go! Total is thirty-two dollars. Theater three on your right.", "給你！總共三十二美元。三號廳在你右手邊。", "'theater' 注意 /ˈθɪətər/ 的 th 音", 8),
 
         // 18. A Job Interview
         ConversationLine(69, 18, "A", "Thank you for coming in today. Tell me about yourself.", "謝謝你今天來面試。請介紹一下自己。", "'tell me about yourself' 是面試常見開場", 1),
         ConversationLine(70, 18, "B", "Sure. I have five years of experience in marketing.", "好的。我有五年的行銷經驗。", "'experience in' 後接領域", 2),
         ConversationLine(71, 18, "A", "What would you say is your greatest strength?", "你覺得你最大的優點是什麼？", "'greatest strength' 是面試經典問題", 3),
         ConversationLine(72, 18, "B", "I'm very organized, and I work well under pressure.", "我很有條理，在壓力下也能表現良好。", "'organized' 重音在第一音節 /ˈɔːrɡənaɪzd/", 4),
+        ConversationLine(189, 18, "A", "Where do you see yourself in five years?", "你對未來五年有什麼規劃？", "'where do you see yourself' 是面試必考題", 5),
+        ConversationLine(190, 18, "B", "I'd like to grow into a leadership role in this company.", "我希望在公司成長為領導角色。", "'leadership role' 重音在 'leader'", 6),
+        ConversationLine(191, 18, "A", "That's great. Do you have any questions for us?", "很好。你有什麼問題想問我們嗎？", "'any questions for us' 是面試結尾常見", 7),
+        ConversationLine(192, 18, "B", "Yes, what does a typical day look like in this position?", "有，這個職位典型的一天是什麼樣的？", "'typical' 重音在第一音節 /ˈtɪpɪkəl/", 8),
 
         // 19. At the Pharmacy
         ConversationLine(73, 19, "A", "Hi, I have a terrible cold. What do you recommend?", "嗨，我感冒很嚴重。你推薦什麼？", "'terrible' 重音在第一音節 /ˈtɛrɪbəl/", 1),
         ConversationLine(74, 19, "B", "I'd suggest this cold medicine. Take it twice a day.", "我建議這個感冒藥。一天吃兩次。", "'twice a day' 是用藥常見頻率", 2),
         ConversationLine(75, 19, "A", "Are there any side effects I should know about?", "有什麼我該知道的副作用嗎？", "'side effects' 是固定搭配", 3),
         ConversationLine(76, 19, "B", "It might make you a little drowsy. Avoid driving.", "可能會讓你有點想睡。避免開車。", "'drowsy' 注意 /ˈdraʊzi/ 的雙母音", 4),
+        ConversationLine(193, 19, "A", "Should I take it with food or on an empty stomach?", "要飯後吃還是空腹吃？", "'empty stomach' 表示空腹", 5),
+        ConversationLine(194, 19, "B", "Take it after meals to avoid stomach upset.", "飯後吃以避免腸胃不適。", "'stomach upset' 表示腸胃不舒服", 6),
+        ConversationLine(195, 19, "A", "Got it. Do I also need cough drops?", "了解。我也需要喉糖嗎？", "'cough drops' 是喉糖的英文說法", 7),
+        ConversationLine(196, 19, "B", "These honey-flavored ones are very soothing. Feel better soon!", "這些蜂蜜口味的很舒緩。祝你早日康復！", "'soothing' 表示舒緩的 /ˈsuːðɪŋ/", 8),
 
         // 20. Riding the Bus
         ConversationLine(77, 20, "A", "Excuse me, does this bus go to Central Park?", "不好意思，這班公車到中央公園嗎？", "'Central Park' 兩個詞都重讀", 1),
         ConversationLine(78, 20, "B", "Yes, it does. It's about six stops from here.", "是的。從這裡大約六站。", "'stops' 注意 /stɒps/ 的結尾", 2),
         ConversationLine(79, 20, "A", "Great. Could you tell me when to get off?", "太好了。可以告訴我什麼時候下車嗎？", "'get off' 是片語動詞表示下車", 3),
         ConversationLine(80, 20, "B", "Sure, I'll let you know. It's right after the hospital.", "好，我會告訴你。就在醫院後面。", "'let you know' 是常用表達", 4),
+        ConversationLine(197, 20, "A", "Thank you! How much is the bus fare?", "謝謝！公車票多少錢？", "'bus fare' 表示公車票價", 5),
+        ConversationLine(198, 20, "B", "It's two dollars. Do you have exact change?", "兩美元。你有剛好的零錢嗎？", "'exact change' 表示剛好的零錢", 6),
+        ConversationLine(199, 20, "A", "I only have a five. Is that okay?", "我只有五美元。可以嗎？", "'is that okay' 是確認用語", 7),
+        ConversationLine(200, 20, "B", "The machine doesn't give change, but I'll make an exception today.", "機器不找零，但我今天破例。", "'make an exception' 表示破例", 8),
 
         // 21. At a Birthday Party
         ConversationLine(81, 21, "A", "Happy birthday! I brought you a little gift.", "生日快樂！我帶了一個小禮物給你。", "'brought' 是 bring 的過去式 /brɔːt/", 1),
         ConversationLine(82, 21, "B", "Oh, you didn't have to! Thank you so much!", "哦，你不用的！非常謝謝！", "'didn't have to' 表示不必要", 2),
         ConversationLine(83, 21, "A", "Of course! The party looks amazing, by the way.", "當然！派對看起來很棒，對了。", "'by the way' 表示順帶一提", 3),
         ConversationLine(84, 21, "B", "Thanks! Help yourself to some food and drinks.", "謝謝！請自己拿吃的和喝的。", "'help yourself' 是請對方自取", 4),
+        ConversationLine(201, 21, "A", "The cake looks delicious! Did you make it yourself?", "蛋糕看起來好好吃！你自己做的嗎？", "'make it yourself' 表示親手做的", 5),
+        ConversationLine(202, 21, "B", "Yes! It's chocolate with strawberry filling.", "是的！巧克力蛋糕配草莓內餡。", "'filling' 表示內餡 /ˈfɪlɪŋ/", 6),
+        ConversationLine(203, 21, "A", "It's your special day! Let's take a group photo.", "今天是你的大日子！我們來合照吧。", "'group photo' 表示團體照", 7),
+        ConversationLine(204, 21, "B", "Great idea! Everyone, gather around!", "好主意！大家，集合過來！", "'gather around' 表示聚集在一起", 8),
 
         // 22. Making a Reservation
         ConversationLine(85, 22, "A", "Hi, I'd like to make a reservation for Friday night.", "嗨，我想預訂週五晚上。", "'reservation' 有四個音節，重音在第三", 1),
         ConversationLine(86, 22, "B", "Sure. How many people and what time?", "好的。幾位？幾點？", "'how many people' 是常用問句", 2),
         ConversationLine(87, 22, "A", "Four people at seven thirty.", "四位，七點半。", "'seven thirty' 注意連讀", 3),
         ConversationLine(88, 22, "B", "Perfect. I have a table by the window. See you Friday!", "好的。我有一張靠窗的桌子。週五見！", "'by the window' 表示靠窗", 4),
+        ConversationLine(205, 22, "A", "Actually, does the restaurant have a private room?", "對了，餐廳有包廂嗎？", "'private room' 表示包廂或私人空間", 5),
+        ConversationLine(206, 22, "B", "Yes, we do! There's a small fee for the private room.", "有的！包廂需要額外付費。", "'fee' 表示費用 /fiː/", 6),
+        ConversationLine(207, 22, "A", "That's fine. It's for a birthday celebration.", "沒關係。是為了慶祝生日。", "'celebration' 重音在第三音節", 7),
+        ConversationLine(208, 22, "B", "How lovely! We can prepare a birthday cake if you'd like.", "真好！如果你想的話，我們可以準備生日蛋糕。", "'if you'd like' 是禮貌的條件句", 8),
 
         // 23. Returning a Product
         ConversationLine(89, 23, "A", "Hi, I'd like to return this jacket. It doesn't fit.", "嗨，我想退這件外套。不合身。", "'doesn't fit' 表示尺寸不合", 1),
         ConversationLine(90, 23, "B", "Do you have the receipt?", "你有收據嗎？", "'receipt' 的 p 不發音 /rɪˈsiːt/", 2),
         ConversationLine(91, 23, "A", "Yes, here it is. Can I get a refund?", "有，在這裡。可以退款嗎？", "'refund' 當名詞重音在第一音節", 3),
         ConversationLine(92, 23, "B", "Of course. We'll process the refund to your card.", "當然。我們會將退款退到你的卡。", "'process' 當動詞重音在第一音節", 4),
+        ConversationLine(209, 23, "A", "How long will the refund take?", "退款要多久？", "'how long will' 問時間長度", 5),
+        ConversationLine(210, 23, "B", "It usually takes three to five business days.", "通常需要三到五個工作天。", "'usually' 注意 /ˈjuːʒuəli/ 的發音", 6),
+        ConversationLine(211, 23, "A", "Would it be possible to exchange it for a larger size instead?", "可以換一件大一號的嗎？", "'exchange' 重音在第二音節 /ɪksˈtʃeɪndʒ/", 7),
+        ConversationLine(212, 23, "B", "Sure! Let me check if we have your size in stock.", "好！讓我看看有沒有你的尺寸庫存。", "'in stock' 表示有庫存", 8),
 
         // 24. Getting a Haircut
         ConversationLine(93, 24, "A", "Hi, I'd like a haircut, please.", "嗨，我想剪頭髮。", "'haircut' 複合詞重音在 'hair'", 1),
         ConversationLine(94, 24, "B", "Sure! How would you like it? Any particular style?", "好！你想要什麼樣式？有特定的嗎？", "'particular' 重音在第二音節", 2),
         ConversationLine(95, 24, "A", "Just a trim. Shorter on the sides, please.", "修剪就好。兩邊短一點。", "'trim' 注意 /trɪm/ 的短母音", 3),
         ConversationLine(96, 24, "B", "Got it. I'll also clean up the back. You'll look great!", "了解。後面也幫你修整。你會很好看的！", "'clean up' 表示修整", 4),
+        ConversationLine(213, 24, "A", "Should I wash my hair first?", "我需要先洗頭嗎？", "'wash my hair' 是日常用語", 5),
+        ConversationLine(214, 24, "B", "I'll wash it for you after the cut. Just relax!", "剪完後我幫你洗。放輕鬆！", "'relax' 重音在第二音節 /rɪˈlæks/", 6),
+        ConversationLine(215, 24, "A", "That looks perfect! You did a great job.", "看起來很棒！你剪得很好。", "'did a great job' 是稱讚用語", 7),
+        ConversationLine(216, 24, "B", "Thank you! Come back anytime. See you next time!", "謝謝！隨時歡迎回來。下次見！", "'anytime' 表示隨時 /ˈɛnitaɪm/", 8),
 
         // 25. Discussing Hobbies
         ConversationLine(97, 25, "A", "So, what do you like to do in your free time?", "那，你空閒時喜歡做什麼？", "'free time' 是常見搭配", 1),
         ConversationLine(98, 25, "B", "I love hiking and reading. How about you?", "我喜歡健行和閱讀。你呢？", "'how about you' 是反問的常用方式", 2),
         ConversationLine(99, 25, "A", "I'm really into photography. I go out every weekend.", "我很迷攝影。每個週末都出去拍。", "'really into' 表示非常喜歡", 3),
         ConversationLine(100, 25, "B", "That's cool! We should go hiking together sometime.", "好酷！我們應該找時間一起去健行。", "'sometime' 表示某個時候", 4),
+        ConversationLine(217, 25, "A", "I'd love that! I can take photos along the trail.", "我很樂意！我可以沿途拍照。", "'along the trail' 表示沿著步道", 5),
+        ConversationLine(218, 25, "B", "Have you tried any trails around here?", "你有試過這附近的步道嗎？", "'around here' 表示這附近", 6),
+        ConversationLine(219, 25, "A", "Not yet. Any recommendations?", "還沒。有推薦的嗎？", "'recommendations' 重音在第四音節", 7),
+        ConversationLine(220, 25, "B", "Sunset Ridge is beautiful! The view from the top is amazing.", "日落山脊很美！從山頂看的景色太驚人了。", "'the view from the top' 表示從頂端看的景色", 8),
 
         // 26. At the Gas Station
         ConversationLine(101, 26, "A", "Hi, fill it up with regular, please.", "嗨，請加滿一般汽油。", "'fill it up' 表示加滿油", 1),
         ConversationLine(102, 26, "B", "Sure. Would you like me to check the oil?", "好。需要我檢查機油嗎？", "'check the oil' 是加油站常見服務", 2),
         ConversationLine(103, 26, "A", "Yes, that would be great. How much is it?", "好，那太好了。多少錢？", "'that would be great' 是禮貌回應", 3),
         ConversationLine(104, 26, "B", "Forty-five dollars for the gas. Your oil level looks fine.", "汽油四十五美元。你的機油量正常。", "'oil level' 重音在 'oil'", 4),
+        ConversationLine(221, 26, "A", "My tire pressure light is on. Can you check that too?", "我的胎壓燈亮了。你也能檢查一下嗎？", "'tire pressure' 表示胎壓", 5),
+        ConversationLine(222, 26, "B", "Of course. It looks like your front left tire is a bit low.", "當然。看起來你的左前胎有點低。", "'a bit low' 表示有點偏低", 6),
+        ConversationLine(223, 26, "A", "Can you fill it up to the right level?", "你可以幫我充到正確的量嗎？", "'fill it up to' 表示充到某個程度", 7),
+        ConversationLine(224, 26, "B", "Done! All set. You're good to go.", "好了！都弄好了。可以上路了。", "'you're good to go' 表示可以出發了", 8),
 
         // 27. Calling for Help
         ConversationLine(105, 27, "A", "Hello, I need help! My car broke down on the highway.", "你好，我需要幫忙！我的車在高速公路拋錨了。", "'broke down' 是片語動詞表示故障", 1),
         ConversationLine(106, 27, "B", "I'm sorry to hear that. What's your location?", "很遺憾聽到。你的位置在哪？", "'location' 重音在第二音節 /loʊˈkeɪʃən/", 2),
         ConversationLine(107, 27, "A", "I'm on Highway 5, near exit 23.", "我在五號高速公路，23 號出口附近。", "'exit' 重音在第一音節 /ˈɛɡzɪt/", 3),
         ConversationLine(108, 27, "B", "A tow truck will be there in about thirty minutes. Stay safe!", "拖吊車大約三十分鐘到。注意安全！", "'tow truck' 重音在 'tow'", 4),
+        ConversationLine(225, 27, "A", "Is there a gas station nearby where I can wait?", "附近有加油站可以讓我等嗎？", "'nearby' 注意 /nɪrˈbaɪ/ 的重音", 5),
+        ConversationLine(226, 27, "B", "Yes, there's one about half a mile ahead.", "有，前面大約半英里有一家。", "'half a mile' 表示半英里的距離", 6),
+        ConversationLine(227, 27, "A", "Should I stay in my car or walk there?", "我應該待在車上還是走過去？", "'stay in' 表示待在裡面", 7),
+        ConversationLine(228, 27, "B", "Please stay in your car with hazard lights on. We'll come to you.", "請留在車上並開啟雙閃燈。我們會去找你。", "'hazard lights' 表示雙閃警示燈", 8),
 
         // 28. A Day at the Beach
         ConversationLine(109, 28, "A", "This beach is beautiful! Let's go for a swim.", "這個海灘好美！我們去游泳吧。", "'go for a swim' 是固定搭配", 1),
         ConversationLine(110, 28, "B", "Good idea! Don't forget to put on sunscreen first.", "好主意！別忘了先擦防曬。", "'put on' 表示塗抹", 2),
         ConversationLine(111, 28, "A", "You're right. The waves look perfect today.", "你說得對。今天的浪看起來很棒。", "'waves' 注意 /weɪvz/ 的雙母音", 3),
         ConversationLine(112, 28, "B", "Totally! Let's grab some ice cream after swimming.", "完全同意！游完泳我們去買冰淇淋。", "'grab some' 口語表示快速買", 4),
+        ConversationLine(229, 28, "A", "Look at that sunset! It's absolutely gorgeous.", "你看那個日落！太美了。", "'gorgeous' 重音在第一音節 /ˈɡɔːrdʒəs/", 5),
+        ConversationLine(230, 28, "B", "Let me take a photo. Stand right there!", "讓我拍張照。站在那裡！", "'stand right there' 表示站在那個位置", 6),
+        ConversationLine(231, 28, "A", "Should we build a sandcastle before we leave?", "我們走之前要堆沙堡嗎？", "'sandcastle' 複合詞重音在 'sand'", 7),
+        ConversationLine(232, 28, "B", "Yes! I'll get the buckets. This is the best day ever!", "好！我去拿桶子。這是最棒的一天！", "'the best day ever' 是表達開心的慣用語", 8),
 
         // 29. Visiting a Friend's Home
         ConversationLine(113, 29, "A", "Hi! Thanks for having me over. I brought some wine.", "嗨！謝謝你邀請我。我帶了一些紅酒。", "'having me over' 表示邀請到家裡", 1),
         ConversationLine(114, 29, "B", "That's so sweet! Come in, make yourself at home.", "你太客氣了！進來，不要拘束。", "'make yourself at home' 是固定用語", 2),
         ConversationLine(115, 29, "A", "Your apartment is so cozy! I love the decorations.", "你的公寓好溫馨！我喜歡這些裝飾。", "'cozy' 注意 /ˈkoʊzi/ 的長母音", 3),
         ConversationLine(116, 29, "B", "Thank you! Dinner is almost ready. I hope you like pasta!", "謝謝！晚餐快好了。我希望你喜歡義大利麵！", "'almost ready' 表示幾乎準備好了", 4),
+        ConversationLine(233, 29, "A", "I love pasta! Can I help with anything in the kitchen?", "我超愛義大利麵！需要我幫忙廚房裡的事嗎？", "'help with' 後接事項", 5),
+        ConversationLine(234, 29, "B", "You can set the table if you don't mind.", "如果你不介意的話，可以幫忙擺餐具。", "'set the table' 表示擺餐具", 6),
+        ConversationLine(235, 29, "A", "Sure! Where do you keep the plates and glasses?", "好！碟子和杯子放在哪裡？", "'keep' 這裡表示存放的位置", 7),
+        ConversationLine(236, 29, "B", "In the cabinet above the sink. Thanks for helping!", "在水槽上面的櫃子裡。謝謝幫忙！", "'cabinet' 重音在第一音節 /ˈkæbɪnɪt/", 8),
 
         // 30. Office Small Talk
         ConversationLine(117, 30, "A", "Good morning! How was your weekend?", "早安！你週末過得如何？", "'how was' 連讀為 /haʊwəz/", 1),
         ConversationLine(118, 30, "B", "It was great! I went camping with my family.", "很棒！我跟家人去露營了。", "'went camping' 注意過去式", 2),
         ConversationLine(119, 30, "A", "That sounds fun! Oh, don't forget the meeting at ten.", "聽起來很好玩！對了，別忘了十點的會議。", "'sounds fun' 是常用回應", 3),
-        ConversationLine(120, 30, "B", "Right, thanks for the reminder. I'll grab my notes.", "對，謝謝提醒。我去拿我的筆記。", "'reminder' 重音在第二音節 /rɪˈmaɪndər/", 4)
+        ConversationLine(120, 30, "B", "Right, thanks for the reminder. I'll grab my notes.", "對，謝謝提醒。我去拿我的筆記。", "'reminder' 重音在第二音節 /rɪˈmaɪndər/", 4),
+        ConversationLine(237, 30, "A", "By the way, did you finish the report?", "對了，你完成報告了嗎？", "'by the way' 表示順帶一提", 5),
+        ConversationLine(238, 30, "B", "Almost! I just need to add the final charts.", "快了！我只需要加上最後的圖表。", "'charts' 注意 /tʃɑːrts/ 的發音", 6),
+        ConversationLine(239, 30, "A", "Great. Let's review it together after the meeting.", "太好了。會議後我們一起看一下。", "'review it together' 表示一起審閱", 7),
+        ConversationLine(240, 30, "B", "Sounds like a plan! I'll have it ready by then.", "好主意！到時候我會準備好。", "'sounds like a plan' 表示好計畫", 8)
     )
 }

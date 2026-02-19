@@ -1,5 +1,6 @@
 package com.bear.englishlearning.data.repository
 
+import android.util.Log
 import com.bear.englishlearning.BuildConfig
 import com.bear.englishlearning.data.local.dao.CachedVideoDao
 import com.bear.englishlearning.data.local.entity.CachedVideo
@@ -22,7 +23,13 @@ class YouTubeRepository @Inject constructor(
     private val cachedVideoDao: CachedVideoDao
 ) {
     companion object {
+        private const val TAG = "YouTubeRepo"
         private const val CACHE_DURATION_MS = 7 * 24 * 60 * 60 * 1000L // 7 days
+    }
+
+    suspend fun clearCache() = withContext(Dispatchers.IO) {
+        Log.d(TAG, "Clearing all video cache")
+        cachedVideoDao.deleteOlderThan(System.currentTimeMillis())
     }
 
     suspend fun searchVideos(
@@ -32,19 +39,26 @@ class YouTubeRepository @Inject constructor(
     ): Resource<List<VideoResult>> = withContext(Dispatchers.IO) {
         try {
             val searchQuery = buildSearchQuery(query)
+            Log.d(TAG, "Searching videos for: $searchQuery (forceRefresh=$forceRefresh)")
 
             // Check cache first
             if (!forceRefresh) {
                 val cached = cachedVideoDao.getVideosByQuery(searchQuery)
+                Log.d(TAG, "Cache has ${cached.size} videos for query")
                 if (cached.isNotEmpty()) {
                     val oldestCache = cached.minOf { it.cachedAtMillis }
-                    if (System.currentTimeMillis() - oldestCache < CACHE_DURATION_MS) {
+                    val cacheAge = System.currentTimeMillis() - oldestCache
+                    if (cacheAge < CACHE_DURATION_MS) {
+                        Log.d(TAG, "Using cached videos (age: ${cacheAge / 1000}s)")
                         return@withContext Resource.Success(cached.map { it.toDomainModel() })
+                    } else {
+                        Log.d(TAG, "Cache expired, fetching fresh")
                     }
                 }
             }
 
             // Call YouTube API
+            Log.d(TAG, "Calling YouTube API...")
             val response = apiService.searchVideos(
                 query = searchQuery,
                 apiKey = BuildConfig.YOUTUBE_API_KEY,
@@ -64,6 +78,8 @@ class YouTubeRepository @Inject constructor(
                     )
                 }
 
+            Log.d(TAG, "API returned ${videos.size} videos: ${videos.map { it.videoId }}")
+
             // Cache results
             val entities = videos.map { it.toCachedEntity(searchQuery) }
             cachedVideoDao.deleteByQuery(searchQuery)
@@ -72,9 +88,11 @@ class YouTubeRepository @Inject constructor(
 
             Resource.Success(videos)
         } catch (e: Exception) {
+            Log.e(TAG, "YouTube API error: ${e.message}", e)
             // Fallback to cache on error
             val cached = cachedVideoDao.getVideosByQuery(buildSearchQuery(query))
             if (cached.isNotEmpty()) {
+                Log.d(TAG, "Falling back to ${cached.size} cached videos")
                 Resource.Success(cached.map { it.toDomainModel() })
             } else {
                 Resource.Error("搜尋影片失敗: ${e.message}", e)

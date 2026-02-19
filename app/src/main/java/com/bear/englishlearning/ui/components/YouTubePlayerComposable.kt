@@ -34,76 +34,84 @@ fun YouTubePlayerComposable(
     val activity = remember(context) { context.findActivity() }
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var playerView by remember { mutableStateOf<YouTubePlayerView?>(null) }
-    var fullScreenView by remember { mutableStateOf<View?>(null) }
-    var youTubePlayer by remember { mutableStateOf<YouTubePlayer?>(null) }
+    // Use key(videoId) to force complete recreation of player when video changes
+    androidx.compose.runtime.key(videoId) {
+        var playerView by remember { mutableStateOf<YouTubePlayerView?>(null) }
+        var fullScreenView by remember { mutableStateOf<View?>(null) }
 
-    AndroidView(
-        modifier = modifier.fillMaxWidth(),
-        factory = { ctx ->
-            YouTubePlayerView(ctx).apply {
-                enableAutomaticInitialization = false
-                lifecycleOwner.lifecycle.addObserver(this)
+        Log.d("YouTubePlayer", "Creating player for video: $videoId")
 
-                val options = IFramePlayerOptions.Builder()
-                    .controls(1)
-                    .fullscreen(1)
-                    .origin("https://www.youtube.com")
-                    .build()
+        AndroidView(
+            modifier = modifier.fillMaxWidth(),
+            factory = { ctx ->
+                YouTubePlayerView(ctx).apply {
+                    enableAutomaticInitialization = false
+                    lifecycleOwner.lifecycle.addObserver(this)
 
-                initialize(object : AbstractYouTubePlayerListener() {
-                    override fun onReady(player: YouTubePlayer) {
-                        youTubePlayer = player
-                        player.cueVideo(videoId, 0f)
-                    }
+                    val options = IFramePlayerOptions.Builder()
+                        .controls(1)
+                        .fullscreen(1)
+                        .build()
 
-                    override fun onError(
-                        player: YouTubePlayer,
-                        error: PlayerConstants.PlayerError
-                    ) {
-                        Log.w("YouTubePlayer", "Player error: $error for video: $videoId")
-                        onError?.invoke(error)
-                    }
-                }, options)
+                    initialize(object : AbstractYouTubePlayerListener() {
+                        override fun onReady(player: YouTubePlayer) {
+                            Log.d("YouTubePlayer", "Player ready, loading video: $videoId")
+                            player.loadVideo(videoId, 0f)
+                        }
 
-                addFullscreenListener(object : FullscreenListener {
-                    override fun onEnterFullscreen(
-                        fullscreenViewParam: View,
-                        exitFullscreen: () -> Unit
-                    ) {
-                        val decor = activity?.window?.decorView as? ViewGroup ?: return
-                        decor.addView(
-                            fullscreenViewParam,
-                            ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT
+                        override fun onError(
+                            player: YouTubePlayer,
+                            error: PlayerConstants.PlayerError
+                        ) {
+                            Log.e("YouTubePlayer", "Player error: $error for video: $videoId")
+                            onError?.invoke(error)
+                        }
+
+                        override fun onStateChange(
+                            youTubePlayer: YouTubePlayer,
+                            state: PlayerConstants.PlayerState
+                        ) {
+                            Log.d("YouTubePlayer", "State changed: $state for video: $videoId")
+                        }
+                    }, options)
+
+                    addFullscreenListener(object : FullscreenListener {
+                        override fun onEnterFullscreen(
+                            fullscreenViewParam: View,
+                            exitFullscreen: () -> Unit
+                        ) {
+                            val decor = activity?.window?.decorView as? ViewGroup ?: return
+                            decor.addView(
+                                fullscreenViewParam,
+                                ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                )
                             )
-                        )
-                        fullScreenView = fullscreenViewParam
-                    }
+                            fullScreenView = fullscreenViewParam
+                        }
 
-                    override fun onExitFullscreen() {
-                        val decor = activity?.window?.decorView as? ViewGroup ?: return
-                        fullScreenView?.let { decor.removeView(it) }
-                        fullScreenView = null
-                    }
-                })
+                        override fun onExitFullscreen() {
+                            val decor = activity?.window?.decorView as? ViewGroup ?: return
+                            fullScreenView?.let { decor.removeView(it) }
+                            fullScreenView = null
+                        }
+                    })
 
-                playerView = this
+                    playerView = this
+                }
             }
-        },
-        update = {
-            youTubePlayer?.cueVideo(videoId, 0f)
-        }
-    )
+        )
 
-    DisposableEffect(lifecycleOwner) {
-        onDispose {
-            val decor = activity?.window?.decorView as? ViewGroup
-            fullScreenView?.let { decor?.removeView(it) }
-            fullScreenView = null
-            playerView?.release()
-            playerView = null
+        DisposableEffect(videoId) {
+            onDispose {
+                Log.d("YouTubePlayer", "Disposing player for video: $videoId")
+                val decor = activity?.window?.decorView as? ViewGroup
+                fullScreenView?.let { decor?.removeView(it) }
+                fullScreenView = null
+                playerView?.release()
+                playerView = null
+            }
         }
     }
 }

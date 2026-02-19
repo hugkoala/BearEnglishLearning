@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bear.englishlearning.data.local.entity.PracticeHistory
@@ -19,6 +20,7 @@ import com.bear.englishlearning.domain.model.SpeechDiffResult
 import com.bear.englishlearning.domain.model.VideoResult
 import com.bear.englishlearning.domain.speech.WordDiffEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,6 +38,7 @@ data class ListeningQuizUiState(
     val isLoadingVideos: Boolean = false,
     val videoError: String? = null,
     val videoPlayerError: Boolean = false,
+    val lastPlayerError: String? = null,
     val isListening: Boolean = false,
     val recognizedText: String = "",
     val diffResult: SpeechDiffResult? = null,
@@ -88,10 +91,10 @@ class ListeningQuizViewModel @Inject constructor(
         }
     }
 
-    private fun searchYouTubeVideos(query: String) {
+    private fun searchYouTubeVideos(query: String, forceRefresh: Boolean = false) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingVideos = true) }
-            when (val result = youTubeRepository.searchVideos(query)) {
+            when (val result = youTubeRepository.searchVideos(query, forceRefresh = forceRefresh)) {
                 is Resource.Success -> {
                     _uiState.update {
                         it.copy(videos = result.data, isLoadingVideos = false, videoError = null)
@@ -114,14 +117,44 @@ class ListeningQuizViewModel @Inject constructor(
     fun onVideoError() {
         val state = _uiState.value
         val nextIndex = state.currentVideoIndex + 1
+        Log.w("ListeningVM", "Video error at index ${state.currentVideoIndex}/${state.videos.size}")
         if (nextIndex < state.videos.size) {
-            _uiState.update {
-                it.copy(currentVideoIndex = nextIndex, videoPlayerError = false)
+            // Add delay to prevent rapid cascade through all videos
+            viewModelScope.launch {
+                delay(1500L)
+                _uiState.update {
+                    it.copy(
+                        currentVideoIndex = nextIndex,
+                        videoPlayerError = false,
+                        lastPlayerError = "影片 ${state.currentVideoIndex + 1} 無法播放，嘗試下一部..."
+                    )
+                }
             }
         } else {
             _uiState.update {
-                it.copy(videoPlayerError = true)
+                it.copy(
+                    videoPlayerError = true,
+                    lastPlayerError = "所有 ${state.videos.size} 部影片都無法播放"
+                )
             }
+        }
+    }
+
+    fun clearCacheAndRetry() {
+        viewModelScope.launch {
+            Log.d("ListeningVM", "Clearing cache and retrying...")
+            youTubeRepository.clearCache()
+            val query = _uiState.value.scenario?.youtubeQuery ?: return@launch
+            _uiState.update {
+                it.copy(
+                    currentVideoIndex = 0,
+                    videoPlayerError = false,
+                    videoError = null,
+                    lastPlayerError = null,
+                    videos = emptyList()
+                )
+            }
+            searchYouTubeVideos(query, forceRefresh = true)
         }
     }
 

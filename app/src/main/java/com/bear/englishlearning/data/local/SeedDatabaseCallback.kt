@@ -15,6 +15,28 @@ class SeedDatabaseCallback @Inject constructor(
 
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
+        seedDatabase()
+    }
+
+    override fun onDestructiveMigration(db: SupportSQLiteDatabase) {
+        super.onDestructiveMigration(db)
+        seedDatabase()
+    }
+
+    override fun onOpen(db: SupportSQLiteDatabase) {
+        super.onOpen(db)
+        // Safety net: if tables are empty (e.g. after destructive migration), re-seed
+        scope.launch {
+            val scenarioDao = database.get().scenarioDao()
+            val scenarios = scenarioDao.getAllScenarios()
+            if (scenarios.isEmpty()) {
+                scenarioDao.insertAllScenarios(SeedData.getScenarios())
+                scenarioDao.insertAllSentences(SeedData.getSentences())
+            }
+        }
+    }
+
+    private fun seedDatabase() {
         scope.launch {
             val scenarioDao = database.get().scenarioDao()
             scenarioDao.insertAllScenarios(SeedData.getScenarios())

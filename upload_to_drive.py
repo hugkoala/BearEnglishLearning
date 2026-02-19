@@ -83,7 +83,14 @@ def upload_file(file_path, folder_name='BearEnglishLearning'):
     return file
 
 if __name__ == '__main__':
-    apk_path = sys.argv[1] if len(sys.argv) > 1 else 'app/build/outputs/apk/debug/app-debug.apk'
+    if len(sys.argv) > 1:
+        apk_path = sys.argv[1]
+    else:
+        # Auto-find the latest APK in the debug output directory
+        import glob
+        apk_dir = 'app/build/outputs/apk/debug'
+        apk_files = sorted(glob.glob(os.path.join(apk_dir, '*.apk')), key=os.path.getmtime, reverse=True)
+        apk_path = apk_files[0] if apk_files else os.path.join(apk_dir, 'app-debug.apk')
     if not os.path.exists(apk_path):
         print(f"❌ File not found: {apk_path}")
         sys.exit(1)

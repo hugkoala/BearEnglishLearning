@@ -8,6 +8,8 @@ import com.bear.englishlearning.data.local.entity.Sentence
 import com.bear.englishlearning.data.preferences.AppPreferences
 import com.bear.englishlearning.data.repository.DailyTaskRepository
 import com.bear.englishlearning.data.repository.ScenarioRepository
+import com.bear.englishlearning.domain.scenario.DailyScenarioGenerator
+import com.bear.englishlearning.domain.scenario.GeneratedScenario
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,13 +20,24 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+enum class DailyTaskMode {
+    PRESET,    // From database seed data
+    GENERATED  // Auto-generated daily scenarios
+}
+
 sealed interface DailyTaskUiState {
     data object Loading : DailyTaskUiState
     data class Success(
         val task: DailyTask,
         val scenario: Scenario,
         val sentences: List<Sentence>,
-        val sentenceCount: Int = 5
+        val sentenceCount: Int = 5,
+        val mode: DailyTaskMode = DailyTaskMode.PRESET
+    ) : DailyTaskUiState
+    data class GeneratedSuccess(
+        val generatedScenario: GeneratedScenario,
+        val sentenceCount: Int = 5,
+        val mode: DailyTaskMode = DailyTaskMode.GENERATED
     ) : DailyTaskUiState
     data class Error(val message: String) : DailyTaskUiState
 }
@@ -33,15 +46,27 @@ sealed interface DailyTaskUiState {
 class DailyTaskViewModel @Inject constructor(
     private val scenarioRepository: ScenarioRepository,
     private val dailyTaskRepository: DailyTaskRepository,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val dailyScenarioGenerator: DailyScenarioGenerator
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<DailyTaskUiState>(DailyTaskUiState.Loading)
     val uiState: StateFlow<DailyTaskUiState> = _uiState.asStateFlow()
 
+    private val _mode = MutableStateFlow(DailyTaskMode.PRESET)
+    val mode: StateFlow<DailyTaskMode> = _mode.asStateFlow()
+
     init {
         loadTodayTask()
         observeTaskCountChanges()
+    }
+
+    fun switchMode(newMode: DailyTaskMode) {
+        _mode.value = newMode
+        when (newMode) {
+            DailyTaskMode.PRESET -> loadTodayTask()
+            DailyTaskMode.GENERATED -> loadGeneratedScenario()
+        }
     }
 
     private fun observeTaskCountChanges() {
@@ -53,6 +78,8 @@ class DailyTaskViewModel @Inject constructor(
                         current.scenario.scenarioId, newCount
                     )
                     _uiState.value = current.copy(sentences = sentences, sentenceCount = newCount)
+                } else if (current is DailyTaskUiState.GeneratedSuccess && current.sentenceCount != newCount) {
+                    _uiState.value = current.copy(sentenceCount = newCount)
                 }
             }
         }
@@ -60,6 +87,7 @@ class DailyTaskViewModel @Inject constructor(
 
     private fun loadTodayTask() {
         viewModelScope.launch {
+            _uiState.value = DailyTaskUiState.Loading
             try {
                 val today = LocalDate.now().toString()
                 var task = dailyTaskRepository.getTaskByDate(today)
@@ -86,7 +114,9 @@ class DailyTaskViewModel @Inject constructor(
                     )
 
                     if (scenario != null) {
-                        _uiState.value = DailyTaskUiState.Success(task, scenario, sentences, taskCount)
+                        _uiState.value = DailyTaskUiState.Success(
+                            task, scenario, sentences, taskCount, DailyTaskMode.PRESET
+                        )
                     } else {
                         _uiState.value = DailyTaskUiState.Error("找不到場景資料")
                     }
@@ -96,6 +126,21 @@ class DailyTaskViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = DailyTaskUiState.Error("載入失敗: ${e.message}")
             }
+        }
+    }
+
+    private fun loadGeneratedScenario() {
+        _uiState.value = DailyTaskUiState.Loading
+        try {
+            val generated = dailyScenarioGenerator.generateForToday()
+            val taskCount = 10 // Generated scenarios always have 10 sentences
+            _uiState.value = DailyTaskUiState.GeneratedSuccess(
+                generatedScenario = generated,
+                sentenceCount = taskCount,
+                mode = DailyTaskMode.GENERATED
+            )
+        } catch (e: Exception) {
+            _uiState.value = DailyTaskUiState.Error("生成場景失敗: ${e.message}")
         }
     }
 

@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bear.englishlearning.data.local.entity.Sentence
+import com.bear.englishlearning.domain.scenario.GeneratedSentence
 import com.bear.englishlearning.ui.components.BearIcon
 import com.bear.englishlearning.ui.theme.MatchGreen
 import java.util.Locale
@@ -55,6 +57,7 @@ fun DailyTaskScreen(
     viewModel: DailyTaskViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentMode by viewModel.mode.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
@@ -70,109 +73,231 @@ fun DailyTaskScreen(
         onDispose { tts?.shutdown() }
     }
 
-    when (val state = uiState) {
-        is DailyTaskUiState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Mode toggle chips
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FilterChip(
+                selected = currentMode == DailyTaskMode.PRESET,
+                onClick = { viewModel.switchMode(DailyTaskMode.PRESET) },
+                label = { Text("📖 預設場景") }
+            )
+            FilterChip(
+                selected = currentMode == DailyTaskMode.GENERATED,
+                onClick = { viewModel.switchMode(DailyTaskMode.GENERATED) },
+                label = { Text("🎲 隨機生成") }
+            )
+        }
+
+        when (val state = uiState) {
+            is DailyTaskUiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            is DailyTaskUiState.Error -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(state.message, color = MaterialTheme.colorScheme.error)
+                }
+            }
+            is DailyTaskUiState.Success -> {
+                PresetTaskContent(
+                    state = state,
+                    tts = tts,
+                    ttsReady = ttsReady,
+                    onComplete = { viewModel.completeTask() },
+                    onNavigateToListening = onNavigateToListening,
+                    onNavigateToSettings = onNavigateToSettings
+                )
+            }
+            is DailyTaskUiState.GeneratedSuccess -> {
+                GeneratedTaskContent(
+                    state = state,
+                    tts = tts,
+                    ttsReady = ttsReady,
+                    onNavigateToListening = onNavigateToListening,
+                    onNavigateToSettings = onNavigateToSettings
+                )
             }
         }
-        is DailyTaskUiState.Error -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(state.message, color = MaterialTheme.colorScheme.error)
-            }
-        }
-        is DailyTaskUiState.Success -> {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                item {
-                    Column {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                BearIcon(size = 36.dp)
-                                Text(
-                                    text = "今日任務",
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                            IconButton(onClick = onNavigateToSettings) {
-                                Icon(Icons.Default.Settings, contentDescription = "設定")
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "場景：${state.scenario.titleZh}（${state.scenario.title}）",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = "每日任務：${state.sentences.size} / ${state.sentenceCount} 句",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+    }
+}
 
-                if (state.task.isCompleted) {
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = MatchGreen.copy(alpha = 0.1f))
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(Icons.Default.CheckCircle, "完成", tint = MatchGreen)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("今日任務已完成 ✅", color = MatchGreen, fontWeight = FontWeight.Bold)
-                            }
-                        }
-                    }
-                }
-
-                itemsIndexed(state.sentences) { index, sentence ->
-                    SentenceCard(
-                        index = index + 1,
-                        sentence = sentence,
-                        tts = tts,
-                        ttsReady = ttsReady
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
+@Composable
+private fun PresetTaskContent(
+    state: DailyTaskUiState.Success,
+    tts: TextToSpeech?,
+    ttsReady: Boolean,
+    onComplete: () -> Unit,
+    onNavigateToListening: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        if (!state.task.isCompleted) {
-                            Button(
-                                onClick = { viewModel.completeTask() },
-                                modifier = Modifier.weight(1f)
-                            ) { Text("完成任務 ✅") }
-                        }
-                        FilledTonalButton(
-                            onClick = onNavigateToListening,
-                            modifier = Modifier.weight(1f)
-                        ) { Text("前往練習 🎧") }
+                        BearIcon(size = 36.dp)
+                        Text(
+                            text = "今日任務",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(Icons.Default.Settings, contentDescription = "設定")
                     }
                 }
-
-                item { Spacer(modifier = Modifier.height(80.dp)) }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "場景：${state.scenario.titleZh}（${state.scenario.title}）",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "每日任務：${state.sentences.size} / ${state.sentenceCount} 句",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
+
+        if (state.task.isCompleted) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MatchGreen.copy(alpha = 0.1f))
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.CheckCircle, "完成", tint = MatchGreen)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("今日任務已完成 ✅", color = MatchGreen, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+
+        itemsIndexed(state.sentences) { index, sentence ->
+            SentenceCard(
+                index = index + 1,
+                sentence = sentence,
+                tts = tts,
+                ttsReady = ttsReady
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (!state.task.isCompleted) {
+                    Button(
+                        onClick = onComplete,
+                        modifier = Modifier.weight(1f)
+                    ) { Text("完成任務 ✅") }
+                }
+                FilledTonalButton(
+                    onClick = onNavigateToListening,
+                    modifier = Modifier.weight(1f)
+                ) { Text("前往練習 🎧") }
+            }
+        }
+
+        item { Spacer(modifier = Modifier.height(80.dp)) }
+    }
+}
+
+@Composable
+private fun GeneratedTaskContent(
+    state: DailyTaskUiState.GeneratedSuccess,
+    tts: TextToSpeech?,
+    ttsReady: Boolean,
+    onNavigateToListening: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
+    val sentences = state.generatedScenario.sentences.take(state.sentenceCount)
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        BearIcon(size = 36.dp)
+                        Text(
+                            text = "🎲 隨機場景",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(Icons.Default.Settings, contentDescription = "設定")
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "場景：${state.generatedScenario.titleZh}（${state.generatedScenario.title}）",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "每日練習：${sentences.size} 句（每天自動更換）",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        itemsIndexed(sentences) { index, sentence ->
+            GeneratedSentenceCard(
+                index = index + 1,
+                sentence = sentence,
+                tts = tts,
+                ttsReady = ttsReady
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+            FilledTonalButton(
+                onClick = onNavigateToListening,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("前往練習 🎧") }
+        }
+
+        item { Spacer(modifier = Modifier.height(80.dp)) }
     }
 }
 
@@ -180,6 +305,42 @@ fun DailyTaskScreen(
 private fun SentenceCard(
     index: Int,
     sentence: Sentence,
+    tts: TextToSpeech?,
+    ttsReady: Boolean
+) {
+    SentenceCardContent(
+        index = index,
+        englishText = sentence.englishText,
+        chineseText = sentence.chineseText,
+        pronunciationTip = sentence.pronunciationTip,
+        tts = tts,
+        ttsReady = ttsReady
+    )
+}
+
+@Composable
+private fun GeneratedSentenceCard(
+    index: Int,
+    sentence: GeneratedSentence,
+    tts: TextToSpeech?,
+    ttsReady: Boolean
+) {
+    SentenceCardContent(
+        index = index,
+        englishText = sentence.englishText,
+        chineseText = sentence.chineseText,
+        pronunciationTip = sentence.pronunciationTip,
+        tts = tts,
+        ttsReady = ttsReady
+    )
+}
+
+@Composable
+private fun SentenceCardContent(
+    index: Int,
+    englishText: String,
+    chineseText: String,
+    pronunciationTip: String,
     tts: TextToSpeech?,
     ttsReady: Boolean
 ) {
@@ -204,7 +365,7 @@ private fun SentenceCard(
                         onClick = {
                             if (ttsReady) {
                                 tts?.setSpeechRate(0.7f)
-                                tts?.speak(sentence.englishText, TextToSpeech.QUEUE_FLUSH, null, "slow_$index")
+                                tts?.speak(englishText, TextToSpeech.QUEUE_FLUSH, null, "slow_$index")
                             }
                         },
                         enabled = ttsReady
@@ -220,7 +381,7 @@ private fun SentenceCard(
                         onClick = {
                             if (ttsReady) {
                                 tts?.setSpeechRate(1.0f)
-                                tts?.speak(sentence.englishText, TextToSpeech.QUEUE_FLUSH, null, "normal_$index")
+                                tts?.speak(englishText, TextToSpeech.QUEUE_FLUSH, null, "normal_$index")
                             }
                         },
                         enabled = ttsReady
@@ -237,7 +398,7 @@ private fun SentenceCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = sentence.englishText,
+                text = englishText,
                 style = MaterialTheme.typography.titleLarge,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium
@@ -246,7 +407,7 @@ private fun SentenceCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = sentence.chineseText,
+                text = chineseText,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -254,7 +415,7 @@ private fun SentenceCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "💡 ${sentence.pronunciationTip}",
+                text = "💡 $pronunciationTip",
                 style = MaterialTheme.typography.bodyMedium,
                 fontStyle = FontStyle.Italic,
                 color = MaterialTheme.colorScheme.tertiary

@@ -158,7 +158,7 @@ fun ListeningQuizScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .aspectRatio(16f / 9f),
-                                onError = { viewModel.onVideoError() }
+                                onError = { error -> viewModel.onVideoError(error.name) }
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(

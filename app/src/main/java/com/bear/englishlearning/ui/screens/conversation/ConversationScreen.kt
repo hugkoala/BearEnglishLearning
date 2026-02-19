@@ -22,6 +22,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.Button
@@ -31,6 +33,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -58,6 +62,7 @@ fun ConversationScreen(
     viewModel: ConversationViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentMode by viewModel.mode.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -84,7 +89,7 @@ fun ConversationScreen(
                                     MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-                        IconButton(onClick = { viewModel.loadRandomConversation() }) {
+                        IconButton(onClick = { viewModel.loadNext() }) {
                             Icon(Icons.Default.Refresh, contentDescription = "換一個對話")
                         }
                     }
@@ -92,43 +97,85 @@ fun ConversationScreen(
             )
         }
     ) { padding ->
-        when (val state = uiState) {
-            is ConversationUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+        Column(modifier = Modifier.padding(padding)) {
+            // Mode toggle chips
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = currentMode == ConversationMode.PRESET,
+                    onClick = { viewModel.switchMode(ConversationMode.PRESET) },
+                    label = { Text("📖 預設對話") },
+                    leadingIcon = {
+                        if (currentMode == ConversationMode.PRESET) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.MenuBook,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
+                FilterChip(
+                    selected = currentMode == ConversationMode.RANDOM,
+                    onClick = { viewModel.switchMode(ConversationMode.RANDOM) },
+                    label = { Text("🎲 隨機生成") },
+                    leadingIcon = {
+                        if (currentMode == ConversationMode.RANDOM) {
+                            Icon(
+                                Icons.Default.AutoAwesome,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        selectedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                )
             }
 
-            is ConversationUiState.Error -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(state.message, style = MaterialTheme.typography.bodyLarge)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { viewModel.loadRandomConversation() }) {
-                            Text("重試")
+            when (val state = uiState) {
+                is ConversationUiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                is ConversationUiState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(state.message, style = MaterialTheme.typography.bodyLarge)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(onClick = { viewModel.loadNext() }) {
+                                Text("重試")
+                            }
                         }
                     }
                 }
-            }
 
-            is ConversationUiState.Success -> {
-                ConversationContent(
-                    state = state,
-                    onRevealNext = { viewModel.revealNextLine() },
-                    onNewConversation = { viewModel.loadRandomConversation() },
-                    onReplay = { viewModel.resetConversation() },
-                    modifier = Modifier.padding(padding)
-                )
+                is ConversationUiState.Success -> {
+                    ConversationContent(
+                        state = state,
+                        onRevealNext = { viewModel.revealNextLine() },
+                        onNewConversation = { viewModel.loadNext() },
+                        onReplay = { viewModel.resetConversation() }
+                    )
+                }
             }
         }
     }
@@ -160,7 +207,10 @@ private fun ConversationContent(
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = if (state.mode == ConversationMode.RANDOM)
+                    MaterialTheme.colorScheme.tertiaryContainer
+                else
+                    MaterialTheme.colorScheme.secondaryContainer
             )
         ) {
             Column(
@@ -169,16 +219,36 @@ private fun ConversationContent(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "💬 ${state.conversation.title}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = if (state.mode == ConversationMode.RANDOM) "🎲" else "💬",
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = state.conversation.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Text(
                     text = state.conversation.titleZh,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                    color = if (state.mode == ConversationMode.RANDOM)
+                        MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+                    else
+                        MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
                 )
+                if (state.mode == ConversationMode.RANDOM) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "✨ 隨機生成的對話",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f)
+                    )
+                }
             }
         }
 

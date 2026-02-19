@@ -1,11 +1,39 @@
+# Built artifacts
 *.iml
-.gradle
-/local.properties
-/.idea
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+*.apk
+*.aab
+*.dex
+*.class
 *.hprof
+
+# Gradle
+.gradle/
+build/
+/build/
+
+# Local config
+local.properties
+
+# IDE
+/.idea/
+*.iws
+*.ipr
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Android
+/captures
+.externalNativeBuild/
+.cxx/
+*.keystore
+!debug.keystore
+
+# Kotlin
+.kotlin/
+
+# Credentials (never commit)
+**/gdrive_token.json
+**/credentials.json
+**/token.json

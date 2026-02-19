@@ -12,13 +12,14 @@ interface YouTubeApiService {
         @Query("q") query: String,
         @Query("key") apiKey: String,
         @Query("type") type: String = "video",
-        @Query("maxResults") maxResults: Int = 5,
+        @Query("maxResults") maxResults: Int = 10,
         @Query("videoDuration") videoDuration: String = "short",
         @Query("relevanceLanguage") relevanceLanguage: String = "en",
         @Query("videoCaption") videoCaption: String = "closedCaption",
         @Query("safeSearch") safeSearch: String = "strict",
         @Query("order") order: String = "relevance",
-        @Query("videoEmbeddable") videoEmbeddable: String = "true"
+        @Query("videoEmbeddable") videoEmbeddable: String = "true",
+        @Query("videoSyndicated") videoSyndicated: String = "true"
     ): YouTubeSearchResponse
 
     companion object {

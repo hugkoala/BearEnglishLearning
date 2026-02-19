@@ -31,9 +31,11 @@ data class ListeningQuizUiState(
     val scenario: Scenario? = null,
     val sentences: List<Sentence> = emptyList(),
     val videos: List<VideoResult> = emptyList(),
+    val currentVideoIndex: Int = 0,
     val selectedSentenceIndex: Int = 0,
     val isLoadingVideos: Boolean = false,
     val videoError: String? = null,
+    val videoPlayerError: Boolean = false,
     val isListening: Boolean = false,
     val recognizedText: String = "",
     val diffResult: SpeechDiffResult? = null,
@@ -107,6 +109,39 @@ class ListeningQuizViewModel @Inject constructor(
 
     fun selectSentence(index: Int) {
         _uiState.update { it.copy(selectedSentenceIndex = index, diffResult = null, recognizedText = "") }
+    }
+
+    fun onVideoError() {
+        val state = _uiState.value
+        val nextIndex = state.currentVideoIndex + 1
+        if (nextIndex < state.videos.size) {
+            _uiState.update {
+                it.copy(currentVideoIndex = nextIndex, videoPlayerError = false)
+            }
+        } else {
+            _uiState.update {
+                it.copy(videoPlayerError = true)
+            }
+        }
+    }
+
+    fun skipToNextVideo() {
+        val state = _uiState.value
+        val nextIndex = state.currentVideoIndex + 1
+        if (nextIndex < state.videos.size) {
+            _uiState.update {
+                it.copy(currentVideoIndex = nextIndex, videoPlayerError = false)
+            }
+        }
+    }
+
+    fun skipToPreviousVideo() {
+        val state = _uiState.value
+        if (state.currentVideoIndex > 0) {
+            _uiState.update {
+                it.copy(currentVideoIndex = state.currentVideoIndex - 1, videoPlayerError = false)
+            }
+        }
     }
 
     fun createRecognitionListener(): RecognitionListener {

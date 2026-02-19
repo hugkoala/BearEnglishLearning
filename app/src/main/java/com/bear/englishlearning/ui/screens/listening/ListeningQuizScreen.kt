@@ -23,6 +23,8 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.SlowMotionVideo
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -146,19 +148,52 @@ fun ListeningQuizScreen(
                                 contentAlignment = Alignment.Center
                             ) { CircularProgressIndicator() }
                         }
-                        uiState.videos.isNotEmpty() -> {
+                        uiState.videos.isNotEmpty() && !uiState.videoPlayerError -> {
+                            val currentVideo = uiState.videos[uiState.currentVideoIndex]
                             YouTubePlayerComposable(
-                                videoId = uiState.videos.first().videoId,
+                                videoId = currentVideo.videoId,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .aspectRatio(16f / 9f)
+                                    .aspectRatio(16f / 9f),
+                                onError = { viewModel.onVideoError() }
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = uiState.videos.first().title,
+                                text = currentVideo.title,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 2
+                            )
+                            // Video navigation
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                IconButton(
+                                    onClick = { viewModel.skipToPreviousVideo() },
+                                    enabled = uiState.currentVideoIndex > 0
+                                ) {
+                                    Icon(Icons.Default.SkipPrevious, "上一部")
+                                }
+                                Text(
+                                    text = "${uiState.currentVideoIndex + 1} / ${uiState.videos.size}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                IconButton(
+                                    onClick = { viewModel.skipToNextVideo() },
+                                    enabled = uiState.currentVideoIndex < uiState.videos.size - 1
+                                ) {
+                                    Icon(Icons.Default.SkipNext, "下一部")
+                                }
+                            }
+                        }
+                        uiState.videoPlayerError -> {
+                            Text(
+                                text = "⚠️ 所有影片都無法播放，請稍後再試",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                         uiState.videoError != null -> {

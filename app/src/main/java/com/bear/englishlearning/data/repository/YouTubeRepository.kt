@@ -27,7 +27,7 @@ class YouTubeRepository @Inject constructor(
 
     suspend fun searchVideos(
         query: String,
-        maxResults: Int = 5,
+        maxResults: Int = 10,
         forceRefresh: Boolean = false
     ): Resource<List<VideoResult>> = withContext(Dispatchers.IO) {
         try {

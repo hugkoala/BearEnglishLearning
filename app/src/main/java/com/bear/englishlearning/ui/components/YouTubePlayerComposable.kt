@@ -3,6 +3,7 @@ package com.bear.englishlearning.ui.components
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.FullscreenListener
@@ -25,7 +27,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 @Composable
 fun YouTubePlayerComposable(
     videoId: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onError: ((PlayerConstants.PlayerError) -> Unit)? = null
 ) {
     val context = LocalContext.current
     val activity = remember(context) { context.findActivity() }
@@ -45,12 +48,21 @@ fun YouTubePlayerComposable(
                 val options = IFramePlayerOptions.Builder()
                     .controls(1)
                     .fullscreen(1)
+                    .origin("https://www.youtube.com")
                     .build()
 
                 initialize(object : AbstractYouTubePlayerListener() {
                     override fun onReady(player: YouTubePlayer) {
                         youTubePlayer = player
                         player.cueVideo(videoId, 0f)
+                    }
+
+                    override fun onError(
+                        player: YouTubePlayer,
+                        error: PlayerConstants.PlayerError
+                    ) {
+                        Log.w("YouTubePlayer", "Player error: $error for video: $videoId")
+                        onError?.invoke(error)
                     }
                 }, options)
 

@@ -23,7 +23,7 @@ import com.bear.englishlearning.data.local.entity.Sentence
         Memo::class,
         CachedVideo::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

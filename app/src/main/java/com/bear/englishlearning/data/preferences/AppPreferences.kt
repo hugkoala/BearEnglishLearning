@@ -51,7 +51,7 @@ class AppPreferences @Inject constructor(
 
     suspend fun setDailyTaskCount(count: Int) {
         context.dataStore.edit { preferences ->
-            preferences[Keys.DAILY_TASK_COUNT] = count.coerceIn(1, 20)
+            preferences[Keys.DAILY_TASK_COUNT] = count.coerceIn(1, 10)
         }
     }
 

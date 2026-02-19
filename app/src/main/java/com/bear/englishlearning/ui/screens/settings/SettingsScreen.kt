@@ -117,8 +117,8 @@ fun SettingsScreen(
                 Slider(
                     value = dailyTaskCount.toFloat(),
                     onValueChange = { viewModel.setDailyTaskCount(it.roundToInt()) },
-                    valueRange = 1f..20f,
-                    steps = 18,
+                    valueRange = 1f..10f,
+                    steps = 8,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row(
@@ -126,7 +126,7 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text("1", style = MaterialTheme.typography.labelSmall)
-                    Text("20", style = MaterialTheme.typography.labelSmall)
+                    Text("10", style = MaterialTheme.typography.labelSmall)
                 }
             }
 
@@ -143,9 +143,8 @@ fun SettingsScreen(
                 listOf(
                     3 to "🌱 輕鬆",
                     5 to "📖 基礎",
-                    10 to "💪 進階",
-                    15 to "🔥 挑戰",
-                    20 to "🏆 極限"
+                    7 to "🔥 挑戰",
+                    10 to "💪 極限"
                 ).forEach { (count, label) ->
                     FilterChip(
                         selected = dailyTaskCount == count,
@@ -177,8 +176,8 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("• 1~3 句：適合零碎時間快速練習", style = MaterialTheme.typography.bodySmall)
                     Text("• 5 句：每日基礎量，輕鬆無負擔", style = MaterialTheme.typography.bodySmall)
-                    Text("• 10 句：穩步提升，建立語感", style = MaterialTheme.typography.bodySmall)
-                    Text("• 15~20 句：密集訓練，快速進步", style = MaterialTheme.typography.bodySmall)
+                    Text("• 7 句：穩步提升，建立語感", style = MaterialTheme.typography.bodySmall)
+                    Text("• 10 句：密集訓練，快速進步", style = MaterialTheme.typography.bodySmall)
                 }
             }
         }

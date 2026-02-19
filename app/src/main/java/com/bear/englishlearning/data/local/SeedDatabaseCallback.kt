@@ -33,6 +33,12 @@ class SeedDatabaseCallback @Inject constructor(
                 scenarioDao.insertAllScenarios(SeedData.getScenarios())
                 scenarioDao.insertAllSentences(SeedData.getSentences())
             }
+            val conversationDao = database.get().conversationDao()
+            val conversations = conversationDao.getAllConversations()
+            if (conversations.isEmpty()) {
+                conversationDao.insertAllConversations(SeedData.getConversations())
+                conversationDao.insertAllLines(SeedData.getConversationLines())
+            }
         }
     }
 
@@ -41,6 +47,9 @@ class SeedDatabaseCallback @Inject constructor(
             val scenarioDao = database.get().scenarioDao()
             scenarioDao.insertAllScenarios(SeedData.getScenarios())
             scenarioDao.insertAllSentences(SeedData.getSentences())
+            val conversationDao = database.get().conversationDao()
+            conversationDao.insertAllConversations(SeedData.getConversations())
+            conversationDao.insertAllLines(SeedData.getConversationLines())
         }
     }
 }

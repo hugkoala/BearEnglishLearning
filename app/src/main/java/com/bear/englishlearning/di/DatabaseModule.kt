@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.bear.englishlearning.data.local.AppDatabase
 import com.bear.englishlearning.data.local.SeedDatabaseCallback
 import com.bear.englishlearning.data.local.dao.CachedVideoDao
+import com.bear.englishlearning.data.local.dao.ConversationDao
 import com.bear.englishlearning.data.local.dao.DailyTaskDao
 import com.bear.englishlearning.data.local.dao.MemoDao
 import com.bear.englishlearning.data.local.dao.PracticeHistoryDao
@@ -59,4 +60,7 @@ object DatabaseModule {
 
     @Provides
     fun provideCachedVideoDao(db: AppDatabase): CachedVideoDao = db.cachedVideoDao()
+
+    @Provides
+    fun provideConversationDao(db: AppDatabase): ConversationDao = db.conversationDao()
 }

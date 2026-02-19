@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.StickyNote2
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bear.englishlearning.ui.MainViewModel
+import com.bear.englishlearning.ui.screens.conversation.ConversationScreen
 import com.bear.englishlearning.ui.screens.dailytask.DailyTaskScreen
 import com.bear.englishlearning.ui.screens.listening.ListeningQuizScreen
 import com.bear.englishlearning.ui.screens.memo.MemoListScreen
@@ -37,6 +39,7 @@ import com.bear.englishlearning.ui.screens.settings.SettingsScreen
 sealed class Screen(val route: String, val label: String) {
     data object Onboarding : Screen("onboarding", "引導")
     data object DailyTask : Screen("daily_task", "每日任務")
+    data object Conversation : Screen("conversation", "模擬對話")
     data object ListeningQuiz : Screen("listening_quiz", "聽力測驗")
     data object MemoList : Screen("memo_list", "備忘錄")
     data object MemoCreate : Screen("memo_create", "新增備忘")
@@ -52,6 +55,7 @@ private data class BottomNavItem(
 
 private val bottomNavItems = listOf(
     BottomNavItem(Screen.DailyTask, { Icon(Icons.Default.CalendarToday, contentDescription = "每日任務") }, "每日任務"),
+    BottomNavItem(Screen.Conversation, { Icon(Icons.Default.Forum, contentDescription = "模擬對話") }, "模擬對話"),
     BottomNavItem(Screen.ListeningQuiz, { Icon(Icons.Default.Hearing, contentDescription = "聽力測驗") }, "聽力測驗"),
     BottomNavItem(Screen.MemoList, { Icon(Icons.Default.StickyNote2, contentDescription = "備忘錄") }, "備忘錄"),
 )
@@ -83,6 +87,7 @@ private fun MainAppContent() {
 
     val showBottomBar = currentRoute in listOf(
         Screen.DailyTask.route,
+        Screen.Conversation.route,
         Screen.ListeningQuiz.route,
         Screen.MemoList.route
     )
@@ -132,6 +137,9 @@ private fun MainAppContent() {
             }
             composable(Screen.ListeningQuiz.route) {
                 ListeningQuizScreen()
+            }
+            composable(Screen.Conversation.route) {
+                ConversationScreen()
             }
             composable(Screen.MemoList.route) {
                 MemoListScreen(

@@ -1,0 +1,361 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "53b810236613ad6b4ad9661703035bcc",
+    "entities": [
+      {
+        "tableName": "scenarios",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`scenarioId` INTEGER NOT NULL, `title` TEXT NOT NULL, `titleZh` TEXT NOT NULL, `category` TEXT NOT NULL, `difficulty` INTEGER NOT NULL, `youtubeQuery` TEXT NOT NULL, PRIMARY KEY(`scenarioId`))",
+        "fields": [
+          {
+            "fieldPath": "scenarioId",
+            "columnName": "scenarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "titleZh",
+            "columnName": "titleZh",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "difficulty",
+            "columnName": "difficulty",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "youtubeQuery",
+            "columnName": "youtubeQuery",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "scenarioId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "sentences",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sentenceId` INTEGER NOT NULL, `scenarioId` INTEGER NOT NULL, `englishText` TEXT NOT NULL, `chineseText` TEXT NOT NULL, `pronunciationTip` TEXT NOT NULL, `orderIndex` INTEGER NOT NULL, PRIMARY KEY(`sentenceId`), FOREIGN KEY(`scenarioId`) REFERENCES `scenarios`(`scenarioId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "sentenceId",
+            "columnName": "sentenceId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scenarioId",
+            "columnName": "scenarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "englishText",
+            "columnName": "englishText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chineseText",
+            "columnName": "chineseText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pronunciationTip",
+            "columnName": "pronunciationTip",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orderIndex",
+            "columnName": "orderIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "sentenceId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_sentences_scenarioId",
+            "unique": false,
+            "columnNames": [
+              "scenarioId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sentences_scenarioId` ON `${TABLE_NAME}` (`scenarioId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "scenarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "scenarioId"
+            ],
+            "referencedColumns": [
+              "scenarioId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "daily_tasks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `scenarioId` INTEGER NOT NULL, `isCompleted` INTEGER NOT NULL, `completedAt` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "taskId",
+            "columnName": "taskId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scenarioId",
+            "columnName": "scenarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCompleted",
+            "columnName": "isCompleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "completedAt",
+            "columnName": "completedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "taskId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "practice_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`historyId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sentenceId` INTEGER NOT NULL, `date` TEXT NOT NULL, `userTranscription` TEXT, `accuracyScore` REAL, `timestamp` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "historyId",
+            "columnName": "historyId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sentenceId",
+            "columnName": "sentenceId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userTranscription",
+            "columnName": "userTranscription",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "accuracyScore",
+            "columnName": "accuracyScore",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "historyId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_practice_history_sentenceId",
+            "unique": false,
+            "columnNames": [
+              "sentenceId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_practice_history_sentenceId` ON `${TABLE_NAME}` (`sentenceId`)"
+          },
+          {
+            "name": "index_practice_history_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_practice_history_date` ON `${TABLE_NAME}` (`date`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "memos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`memoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `voiceTranscription` TEXT, `relatedScenarioTitle` TEXT, `createdAt` INTEGER NOT NULL, `nextReviewAt` INTEGER NOT NULL, `isReviewed` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "memoId",
+            "columnName": "memoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "voiceTranscription",
+            "columnName": "voiceTranscription",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "relatedScenarioTitle",
+            "columnName": "relatedScenarioTitle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nextReviewAt",
+            "columnName": "nextReviewAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReviewed",
+            "columnName": "isReviewed",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "memoId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "cached_videos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`videoId` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `thumbnailUrl` TEXT NOT NULL, `channelTitle` TEXT NOT NULL, `scenarioQuery` TEXT NOT NULL, `cachedAtMillis` INTEGER NOT NULL, PRIMARY KEY(`videoId`))",
+        "fields": [
+          {
+            "fieldPath": "videoId",
+            "columnName": "videoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnailUrl",
+            "columnName": "thumbnailUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "channelTitle",
+            "columnName": "channelTitle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scenarioQuery",
+            "columnName": "scenarioQuery",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cachedAtMillis",
+            "columnName": "cachedAtMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "videoId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '53b810236613ad6b4ad9661703035bcc')"
+    ]
+  }
+}

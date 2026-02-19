@@ -16,7 +16,7 @@ This file provides guidance for AI assistants working on this project.
 - **Navigation**: Navigation Compose 2.7.7
 - **Preferences**: DataStore 1.1.1
 - **Background**: WorkManager 2.9.1
-- **YouTube**: android-youtube-player 12.1.0
+- **Image Loading**: Coil 2.6.0
 - **Build**: AGP 8.4.2, Gradle 8.7
 - **Min SDK**: 26 (Android 8.0), **Target/Compile SDK**: 35
 
@@ -60,14 +60,14 @@ app/src/main/java/com/bear/englishlearning/
 ### Auto-Generation Pattern
 - `DailyVocabularyGenerator`: 200+ words, date-seeded, returns 10/day
 - `RandomConversationGenerator`: 10 template scenarios × 8 slots × 3-4 variations = 10,000+ combos
+- `DailyScenarioGenerator`: 20 scenario templates × 10 sentences, date-seeded daily rotation
 - `GeneratedScenario` / `GeneratedSentence`: Domain models for generated content (not Room entities)
 
 ### YouTube Integration
 - API Key in `BuildConfig.YOUTUBE_API_KEY`
 - Videos cached 7 days in Room (`cached_videos` table)
-- Error 150/152 (embedding restricted): 300ms fast skip + blacklist
-- Other errors: 1.5s delay then skip
-- Player uses `key(videoId)` for force recreation, `loadVideo()` not `cueVideo()`
+- Displays thumbnail (Coil) + title + channel; tap opens YouTube app/browser
+- No embedded WebView player — avoids all embedding restriction issues
 
 ## Build & Deploy
 
@@ -123,6 +123,6 @@ app/build/outputs/apk/debug/BearEnglishLearning-debug-v1.0-{timestamp}.apk
 | `RandomConversationGenerator.kt` | 10 scenario templates, random dialogue assembly |
 | `WordDiffEngine.kt` | LCS word-level diff for speech comparison |
 | `TextNormalizer.kt` | English text normalization (50+ contractions) |
-| `YouTubePlayerComposable.kt` | YouTube IFrame player wrapper with error handling |
+| `DailyScenarioGenerator.kt` | 20 scenario templates × 10 sentences, daily rotation |
 | `DailyReviewReminderWorker.kt` | 9 AM push notification for memo review |
 | `upload_to_drive.py` | Auto-upload APK to Google Drive |

@@ -9,19 +9,18 @@
 ## ✨ 功能特色
 
 ### 📋 每日任務 (Daily Task)
-- 每天隨機抽取一個生活情境（共 30 個場景，90 句常用英文）
-- 每個場景包含 **3 句基礎英文**，附中文翻譯與發音技巧
+- 每天隨機抽取一個生活情境（共 30 個場景，300 句常用英文）
+- 模式切換：📖 預設場景 vs 🎲 隨機生成（FilterChip 切換）
+- **隨機生成模式**：20 個場景模板 × 10 句，每天自動更換
+- 每個場景附中文翻譯與發音技巧
 - 支援 **TTS 語音播放**（慢速 0.7x / 正常 1.0x）
 - 完成任務後可直接跳轉聽力測驗
 
 ### 🎧 聽力測驗 (Listening Quiz)
-- **YouTube 影片內嵌播放**（使用 android-youtube-player 庫）
+- **YouTube 影片縮圖預覽**：顯示影片縮圖（Coil 載入）、標題與頻道名稱
+- 點擊縮圖或「在 YouTube 中觀看」按鈕，直接跳轉 YouTube App 或瀏覽器播放
 - 根據當日場景自動搜尋相關英文學習影片（預設搜尋 20 部）
-- 影片播放錯誤智慧處理：
-  - 嵌入限制錯誤（150/152）**300ms 快速跳過**
-  - 其他錯誤 1.5s 延遲後跳過
-  - **黑名單機制**：自動記憶無法播放的影片 ID
-  - 清除快取重試按鈕
+- 影片瀏覽：上一部 / 下一部 / 重新載入
 - 支援 **語音錄製** 與 **即時語音辨識**（優先使用裝置端辨識）
 - **Word-Level Diff 對比**：使用 LCS 演算法逐字比對，以顏色標示：
   - 🟢 綠色 = 匹配正確
@@ -81,7 +80,7 @@ MVVM + Repository Pattern + Clean Architecture
 | 導航 | Navigation Compose | 2.7.7 |
 | 偏好設定 | DataStore Preferences | 1.1.1 |
 | 背景任務 | WorkManager | 2.9.1 |
-| YouTube 播放 | android-youtube-player | 12.1.0 |
+| 圖片載入 | Coil Compose | 2.6.0 |
 | 編譯工具 | AGP / Gradle | 8.4.2 / 8.7 |
 | 最低 SDK | Android 8.0 (API 26) | - |
 | 目標 SDK | Android 15 (API 35) | - |
@@ -113,6 +112,10 @@ app/src/main/java/com/bear/englishlearning/
 │   ├── conversation/
 │   │   └── RandomConversationGenerator.kt  # 隨機對話生成器（10 模板 × 8 欄位 × 3-4 變體）
 │   ├── model/                              # Domain 模型
+│   ├── scenario/
+│   │   ├── DailyScenarioGenerator.kt       # 每日場景生成器（20 模板 × 10 句）
+│   │   ├── GeneratedScenario.kt            # 生成場景資料模型
+│   │   └── GeneratedSentence.kt            # 生成句子資料模型
 │   ├── speech/
 │   │   ├── TextNormalizer.kt               # 文字正規化（縮寫展開、標點移除）
 │   │   └── WordDiffEngine.kt               # LCS 逐字比對演算法
@@ -123,8 +126,7 @@ app/src/main/java/com/bear/englishlearning/
 │   ├── MainViewModel.kt                    # Onboarding 狀態管理
 │   ├── components/
 │   │   ├── BearIcon.kt                     # 🐻 熊頭圖示元件
-│   │   ├── SpeechDiffDisplay.kt            # 語音比對結果顯示元件
-│   │   └── YouTubePlayerComposable.kt      # YouTube 內嵌播放元件
+│   │   └── SpeechDiffDisplay.kt            # 語音比對結果顯示元件
 │   ├── navigation/
 │   │   └── AppNavigation.kt                # 導航圖（5 個底部分頁 + 子頁面）
 │   ├── screens/

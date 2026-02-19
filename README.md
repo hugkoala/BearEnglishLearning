@@ -1,6 +1,8 @@
 # 🐻 Bear English Learning
 
-一款專為個人英文學習設計的 Android App，透過每日情境句練習、YouTube 聽力測驗、語音對比和備忘錄複習，幫助你輕鬆提升英文能力。
+一款專為個人英文學習設計的 Android App，透過每日情境句練習、模擬對話、YouTube 聽力測驗、每日單字表、語音對比和備忘錄複習，幫助你輕鬆提升英文能力。
+
+**五大功能分頁**：📋 每日任務 · 💬 模擬對話 · 🎧 聽力測驗 · 📚 單字表 · 📒 備忘錄
 
 ---
 
@@ -14,7 +16,12 @@
 
 ### 🎧 聽力測驗 (Listening Quiz)
 - **YouTube 影片內嵌播放**（使用 android-youtube-player 庫）
-- 根據當日場景自動搜尋相關英文學習影片
+- 根據當日場景自動搜尋相關英文學習影片（預設搜尋 20 部）
+- 影片播放錯誤智慧處理：
+  - 嵌入限制錯誤（150/152）**300ms 快速跳過**
+  - 其他錯誤 1.5s 延遲後跳過
+  - **黑名單機制**：自動記憶無法播放的影片 ID
+  - 清除快取重試按鈕
 - 支援 **語音錄製** 與 **即時語音辨識**（優先使用裝置端辨識）
 - **Word-Level Diff 對比**：使用 LCS 演算法逐字比對，以顏色標示：
   - 🟢 綠色 = 匹配正確
@@ -22,11 +29,28 @@
   - 🟠 橘色 = 多說的單字
 - 自動計算準確度百分比並記錄練習歷史
 
+### � 模擬對話 (Conversation Simulation)
+- **30 組預設對話**（共 240 句），涵蓋日常生活情境
+- **隨機對話生成器**：10 個場景模板 × 8 個對話欄位 × 3-4 變體 = **10,000+ 種組合**
+- 模式切換：📖 預設對話 vs 🎲 隨機生成（FilterChip 切換）
+- 聊天泡泡式 UI，逐句揭露，支援中英對照
+
+### 📚 每日單字表 (Daily Vocabulary)
+- **200+ 精選英文單字**，涵蓋 14 個分類：
+  - 日常生活、旅遊、美食、健康、工作、情緒、教育、科技、購物、自然、社交、交通、居家、娛樂、財務、常用詞
+- 每個單字包含：單字、詞性、音標、英文釋義、中文釋義、例句（中英）
+- **每日自動生成 10 個單字**，使用日期種子確保當天相同
+- 卡片式 UI，可展開查看例句，附分類標籤
+
 ### 📒 備忘錄 (Memo)
 - 隨時記錄學習心得與筆記
 - 可關聯相關練習場景
 - **隔天早上 9:00 自動推播通知**提醒複習
 - 複習頁面支援逐條標記「已複習」或一鍵全部完成
+
+### ⚙️ 設定 (Settings)
+- **每日任務數量**：1-10 題滑桿調整（預設 5 題）
+- **難度設定**
 
 ### 🎓 首次啟動引導 (Onboarding)
 5 頁引導流程，協助設定：
@@ -71,7 +95,7 @@ app/src/main/java/com/bear/englishlearning/
 ├── data/
 │   ├── local/
 │   │   ├── AppDatabase.kt              # Room 資料庫（6 張表）
-│   │   ├── SeedData.kt                 # 預載資料（30 場景 × 3 句）
+│   │   ├── SeedData.kt                 # 預載資料（30 場景 × 10 句、30 對話 × 8 句）
 │   │   ├── SeedDatabaseCallback.kt     # 首次建立資料庫時寫入種子資料
 │   │   ├── dao/                        # 5 個 DAO 介面
 │   │   └── entity/                     # 6 個 Entity 類別
@@ -86,23 +110,32 @@ app/src/main/java/com/bear/englishlearning/
 │   ├── DatabaseModule.kt               # 資料庫 DI 模組
 │   └── NetworkModule.kt                # 網路 DI 模組
 ├── domain/
-│   ├── model/                          # Domain 模型
-│   └── speech/
-│       ├── TextNormalizer.kt           # 文字正規化（縮寫展開、標點移除）
-│       └── WordDiffEngine.kt           # LCS 逐字比對演算法
+│   ├── conversation/
+│   │   └── RandomConversationGenerator.kt  # 隨機對話生成器（10 模板 × 8 欄位 × 3-4 變體）
+│   ├── model/                              # Domain 模型
+│   ├── speech/
+│   │   ├── TextNormalizer.kt               # 文字正規化（縮寫展開、標點移除）
+│   │   └── WordDiffEngine.kt               # LCS 逐字比對演算法
+│   └── vocabulary/
+│       ├── DailyVocabularyGenerator.kt     # 每日單字生成器（200+ 單字、日期種子）
+│       └── VocabularyWord.kt               # 單字資料模型
 ├── ui/
-│   ├── MainViewModel.kt               # Onboarding 狀態管理
+│   ├── MainViewModel.kt                    # Onboarding 狀態管理
 │   ├── components/
-│   │   ├── SpeechDiffDisplay.kt        # 語音比對結果顯示元件
-│   │   └── YouTubePlayerComposable.kt  # YouTube 內嵌播放元件
+│   │   ├── BearIcon.kt                     # 🐻 熊頭圖示元件
+│   │   ├── SpeechDiffDisplay.kt            # 語音比對結果顯示元件
+│   │   └── YouTubePlayerComposable.kt      # YouTube 內嵌播放元件
 │   ├── navigation/
-│   │   └── AppNavigation.kt            # 導航圖（底部導航 + 子頁面）
+│   │   └── AppNavigation.kt                # 導航圖（5 個底部分頁 + 子頁面）
 │   ├── screens/
-│   │   ├── dailytask/                  # 每日任務頁面 + ViewModel
-│   │   ├── listening/                  # 聽力測驗頁面 + ViewModel
-│   │   ├── memo/                       # 備忘錄頁面 + ViewModel
-│   │   ├── onboarding/                 # 引導頁面（5 頁 HorizontalPager）
-│   │   └── review/                     # 複習頁面 + ViewModel
+│   │   ├── conversation/                   # 模擬對話頁面 + ViewModel
+│   │   ├── dailytask/                      # 每日任務頁面 + ViewModel
+│   │   ├── listening/                      # 聽力測驗頁面 + ViewModel
+│   │   ├── memo/                           # 備忘錄頁面 + ViewModel
+│   │   ├── onboarding/                     # 引導頁面（5 頁 HorizontalPager）
+│   │   ├── review/                         # 複習頁面 + ViewModel
+│   │   ├── settings/                       # 設定頁面 + ViewModel
+│   │   └── vocabulary/                     # 每日單字表頁面 + ViewModel
 │   └── theme/                          # Material3 主題（Color、Theme、Type）
 └── worker/
     └── DailyReviewReminderWorker.kt    # 每日複習提醒 Worker
@@ -116,16 +149,18 @@ app/src/test/java/com/bear/englishlearning/domain/speech/
 
 ## 📊 資料庫設計
 
-共 6 張表：
+共 8 張表：
 
 | 表名 | 用途 |
 |------|------|
 | `scenarios` | 30 個英文學習場景 |
-| `sentences` | 90 句英文例句（每場景 3 句） |
+| `sentences` | 300 句英文例句（每場景 10 句） |
 | `daily_tasks` | 每日任務記錄 |
 | `practice_history` | 語音練習歷史與準確度 |
 | `memos` | 學習備忘錄 |
 | `cached_videos` | YouTube 影片快取（7 天 TTL） |
+| `conversations` | 30 組模擬對話 |
+| `conversation_lines` | 240 句對話內容（每組 8 句） |
 
 ### 預載場景清單
 

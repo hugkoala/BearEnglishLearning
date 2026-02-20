@@ -20,6 +20,7 @@ enum class VocabularyTab { DAILY, MY_WORDS }
 data class VocabularyUiState(
     val words: List<VocabularyWord> = emptyList(),
     val customWords: List<CustomWord> = emptyList(),
+    val savedWordNames: Set<String> = emptySet(),
     val dateLabel: String = "",
     val expandedIndex: Int? = null,
     val currentTab: VocabularyTab = VocabularyTab.DAILY,
@@ -38,6 +39,7 @@ class VocabularyViewModel @Inject constructor(
     init {
         loadTodayWords()
         loadCustomWords()
+        loadSavedWordNames()
     }
 
     fun loadTodayWords() {
@@ -56,6 +58,31 @@ class VocabularyViewModel @Inject constructor(
             customWordRepository.getAllWords().collect { words ->
                 _uiState.value = _uiState.value.copy(customWords = words)
             }
+        }
+    }
+
+    private fun loadSavedWordNames() {
+        viewModelScope.launch {
+            customWordRepository.getAllWordNames().collect { names ->
+                _uiState.value = _uiState.value.copy(savedWordNames = names.toSet())
+            }
+        }
+    }
+
+    fun addDailyWordToMyWords(word: VocabularyWord) {
+        viewModelScope.launch {
+            customWordRepository.addWord(
+                CustomWord(
+                    word = word.word,
+                    partOfSpeech = word.partOfSpeech,
+                    phonetic = word.phonetic,
+                    meaningEn = word.meaningEn,
+                    meaningZh = word.meaningZh,
+                    exampleSentence = word.exampleSentence,
+                    exampleZh = word.exampleZh,
+                    category = word.category
+                )
+            )
         }
     }
 

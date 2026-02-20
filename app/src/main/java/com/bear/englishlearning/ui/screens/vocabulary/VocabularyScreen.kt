@@ -24,6 +24,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -203,7 +205,9 @@ fun VocabularyScreen(
                                 word = word,
                                 index = index + 1,
                                 isExpanded = uiState.expandedIndex == index,
+                                isSaved = word.word in uiState.savedWordNames,
                                 onToggle = { viewModel.toggleExpanded(index) },
+                                onAddToMyWords = { viewModel.addDailyWordToMyWords(word) },
                                 tts = tts,
                                 ttsReady = ttsReady
                             )
@@ -601,7 +605,9 @@ private fun VocabularyWordCard(
     word: VocabularyWord,
     index: Int,
     isExpanded: Boolean,
+    isSaved: Boolean = false,
     onToggle: () -> Unit,
+    onAddToMyWords: () -> Unit = {},
     tts: TextToSpeech?,
     ttsReady: Boolean
 ) {
@@ -688,6 +694,21 @@ private fun VocabularyWordCard(
                         Icons.Default.VolumeUp,
                         contentDescription = "播放發音",
                         tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Add to My Words button
+                IconButton(
+                    onClick = onAddToMyWords,
+                    enabled = !isSaved,
+                    modifier = Modifier.size(36.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = if (isSaved) "已收藏" else "加入我的單字",
+                        tint = if (isSaved) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }

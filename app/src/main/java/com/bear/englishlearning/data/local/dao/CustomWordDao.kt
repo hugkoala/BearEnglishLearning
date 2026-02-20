@@ -24,4 +24,7 @@ interface CustomWordDao {
 
     @Query("SELECT COUNT(*) FROM custom_words")
     fun getWordCount(): Flow<Int>
+
+    @Query("SELECT word FROM custom_words")
+    fun getAllWordNames(): Flow<List<String>>
 }

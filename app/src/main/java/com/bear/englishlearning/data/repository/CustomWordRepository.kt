@@ -19,4 +19,6 @@ class CustomWordRepository @Inject constructor(
     suspend fun deleteWord(word: CustomWord) = customWordDao.delete(word)
 
     suspend fun deleteById(id: Long) = customWordDao.deleteById(id)
+
+    fun getAllWordNames(): Flow<List<String>> = customWordDao.getAllWordNames()
 }

@@ -1,5 +1,6 @@
 package com.bear.englishlearning.di
 
+import com.bear.englishlearning.data.remote.TranslationApiService
 import com.bear.englishlearning.data.remote.YouTubeApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -45,4 +46,16 @@ object NetworkModule {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
         .create(YouTubeApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTranslationApiService(
+        okHttpClient: OkHttpClient,
+        moshi: Moshi
+    ): TranslationApiService = Retrofit.Builder()
+        .baseUrl(TranslationApiService.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .build()
+        .create(TranslationApiService::class.java)
 }

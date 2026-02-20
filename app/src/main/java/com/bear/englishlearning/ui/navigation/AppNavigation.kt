@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.Spellcheck
 import androidx.compose.material.icons.filled.StickyNote2
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -37,6 +38,7 @@ import com.bear.englishlearning.ui.screens.memo.MemoScreen
 import com.bear.englishlearning.ui.screens.onboarding.OnboardingScreen
 import com.bear.englishlearning.ui.screens.review.ReviewScreen
 import com.bear.englishlearning.ui.screens.settings.SettingsScreen
+import com.bear.englishlearning.ui.screens.translation.TranslationScreen
 import com.bear.englishlearning.ui.screens.vocabulary.VocabularyScreen
 
 sealed class Screen(val route: String, val label: String) {
@@ -49,6 +51,7 @@ sealed class Screen(val route: String, val label: String) {
     data object MemoCreate : Screen("memo_create", "新增備忘")
     data object Review : Screen("review", "複習")
     data object RealTimeConversation : Screen("realtime_conversation", "即時對話")
+    data object Translation : Screen("translation", "翻譯")
     data object Settings : Screen("settings", "設定")
 }
 
@@ -64,6 +67,7 @@ private val bottomNavItems = listOf(
     BottomNavItem(Screen.ListeningQuiz, { Icon(Icons.Default.Hearing, contentDescription = "聽力測驗") }, "聽力測驗"),
     BottomNavItem(Screen.Vocabulary, { Icon(Icons.Default.Spellcheck, contentDescription = "單字表") }, "單字表"),
     BottomNavItem(Screen.MemoList, { Icon(Icons.Default.StickyNote2, contentDescription = "備忘錄") }, "備忘錄"),
+    BottomNavItem(Screen.Translation, { Icon(Icons.Default.Translate, contentDescription = "翻譯") }, "翻譯"),
 )
 
 @Composable
@@ -96,7 +100,8 @@ private fun MainAppContent() {
         Screen.Conversation.route,
         Screen.ListeningQuiz.route,
         Screen.Vocabulary.route,
-        Screen.MemoList.route
+        Screen.MemoList.route,
+        Screen.Translation.route
     )
 
     Scaffold(
@@ -196,6 +201,9 @@ private fun MainAppContent() {
             }
             composable(Screen.Settings.route) {
                 SettingsScreen(onBack = { navController.popBackStack() })
+            }
+            composable(Screen.Translation.route) {
+                TranslationScreen()
             }
         }
     }

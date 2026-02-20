@@ -135,6 +135,16 @@ private fun MainAppContent() {
                             launchSingleTop = true
                         }
                     },
+                    onNavigateToVocabulary = {
+                        navController.navigate(Screen.Vocabulary.route) {
+                            launchSingleTop = true
+                        }
+                    },
+                    onNavigateToConversation = {
+                        navController.navigate(Screen.Conversation.route) {
+                            launchSingleTop = true
+                        }
+                    },
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route)
                     }

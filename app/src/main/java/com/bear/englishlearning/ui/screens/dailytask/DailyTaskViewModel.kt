@@ -8,8 +8,12 @@ import com.bear.englishlearning.data.local.entity.Sentence
 import com.bear.englishlearning.data.preferences.AppPreferences
 import com.bear.englishlearning.data.repository.DailyTaskRepository
 import com.bear.englishlearning.data.repository.ScenarioRepository
+import com.bear.englishlearning.domain.conversation.GeneratedConversation
+import com.bear.englishlearning.domain.conversation.RandomConversationGenerator
 import com.bear.englishlearning.domain.scenario.DailyScenarioGenerator
 import com.bear.englishlearning.domain.scenario.GeneratedScenario
+import com.bear.englishlearning.domain.vocabulary.DailyVocabularyGenerator
+import com.bear.englishlearning.domain.vocabulary.VocabularyWord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,7 +51,9 @@ class DailyTaskViewModel @Inject constructor(
     private val scenarioRepository: ScenarioRepository,
     private val dailyTaskRepository: DailyTaskRepository,
     private val appPreferences: AppPreferences,
-    private val dailyScenarioGenerator: DailyScenarioGenerator
+    private val dailyScenarioGenerator: DailyScenarioGenerator,
+    private val dailyVocabularyGenerator: DailyVocabularyGenerator,
+    private val randomConversationGenerator: RandomConversationGenerator
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<DailyTaskUiState>(DailyTaskUiState.Loading)
@@ -56,9 +62,24 @@ class DailyTaskViewModel @Inject constructor(
     private val _mode = MutableStateFlow(DailyTaskMode.PRESET)
     val mode: StateFlow<DailyTaskMode> = _mode.asStateFlow()
 
+    // Preview data for quick-access sections
+    private val _vocabularyPreview = MutableStateFlow<List<VocabularyWord>>(emptyList())
+    val vocabularyPreview: StateFlow<List<VocabularyWord>> = _vocabularyPreview.asStateFlow()
+
+    private val _conversationPreview = MutableStateFlow<GeneratedConversation?>(null)
+    val conversationPreview: StateFlow<GeneratedConversation?> = _conversationPreview.asStateFlow()
+
     init {
         loadTodayTask()
         observeTaskCountChanges()
+        loadPreviewData()
+    }
+
+    private fun loadPreviewData() {
+        // Load vocabulary preview (first 3 words of today's daily vocabulary)
+        _vocabularyPreview.value = dailyVocabularyGenerator.generateForToday().take(3)
+        // Load conversation preview
+        _conversationPreview.value = randomConversationGenerator.generate()
     }
 
     fun switchMode(newMode: DailyTaskMode) {

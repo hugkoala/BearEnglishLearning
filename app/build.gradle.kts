@@ -8,6 +8,18 @@ plugins {
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
+
+// ── Read version config from version.properties ──
+val versionProps = Properties().apply {
+    rootProject.file("version.properties").inputStream().use { load(it) }
+}
+val vMajor = versionProps.getProperty("VERSION_MAJOR").toInt()
+val vMinor = versionProps.getProperty("VERSION_MINOR").toInt()
+val vPatch = versionProps.getProperty("VERSION_PATCH").toInt()
+val appLabel = versionProps.getProperty("APP_NAME")
+val computedVersionName = "$vMajor.$vMinor.$vPatch"
+val computedVersionCode = vMajor * 10000 + vMinor * 100 + vPatch
 
 android {
     namespace = "com.bear.englishlearning"
@@ -17,8 +29,8 @@ android {
         applicationId = "com.bear.englishlearning"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = computedVersionCode
+        versionName = computedVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -30,7 +42,7 @@ android {
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
         variant.outputs.all {
             val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-            output.outputFileName = "BearEnglishLearning-${variant.name}-v${variant.versionName}-$timestamp.apk"
+            output.outputFileName = "$appLabel-${variant.name}-v${variant.versionName}-$timestamp.apk"
             true
         }
     }

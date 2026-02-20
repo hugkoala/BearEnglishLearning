@@ -1,9 +1,14 @@
 package com.bear.englishlearning.ui.screens.realtimeconversation
 
 import android.Manifest
+import android.os.Handler
+import android.os.Looper
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -96,18 +101,51 @@ fun RealTimeConversationScreen(
 
     // SpeechRecognizer setup
     var speechRecognizer by remember { mutableStateOf<SpeechRecognizer?>(null) }
+    var speechAvailable by remember { mutableStateOf(false) }
     var showTopicMenu by remember { mutableStateOf(false) }
+    var hasMicPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
+                android.content.pm.PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
+
+    // Permission launcher
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasMicPermission = granted
+        if (!granted) {
+            Toast.makeText(context, "需要麥克風權限才能對話", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     DisposableEffect(Unit) {
         tts = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 tts?.setLanguage(Locale.US)
                 tts?.setSpeechRate(0.9f)
+                // Set up UtteranceProgressListener ONCE here
+                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) {}
+                    override fun onDone(utteranceId: String?) {
+                        mainHandler.post { viewModel.onSpeakingDone() }
+                    }
+                    @Deprecated("Deprecated in Java")
+                    override fun onError(utteranceId: String?) {
+                        mainHandler.post { viewModel.onSpeakingDone() }
+                    }
+                })
                 ttsReady = true
             }
         }
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        speechAvailable = SpeechRecognizer.isRecognitionAvailable(context)
+        if (speechAvailable) {
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        }
         onDispose {
+            tts?.stop()
             tts?.shutdown()
             speechRecognizer?.destroy()
         }
@@ -132,16 +170,6 @@ fun RealTimeConversationScreen(
         if (uiState is RealTimeConversationUiState.Speaking && ttsReady) {
             val lastBotMessage = messages.lastOrNull { !it.isUser }
             if (lastBotMessage != null) {
-                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) {}
-                    override fun onDone(utteranceId: String?) {
-                        viewModel.onSpeakingDone()
-                    }
-                    @Deprecated("Deprecated in Java")
-                    override fun onError(utteranceId: String?) {
-                        viewModel.onSpeakingDone()
-                    }
-                })
                 tts?.speak(lastBotMessage.text, TextToSpeech.QUEUE_FLUSH, null, "reply_${lastBotMessage.id}")
             }
         }
@@ -150,16 +178,6 @@ fun RealTimeConversationScreen(
     // Speak greeting when conversation starts
     LaunchedEffect(messages) {
         if (messages.size == 1 && !messages[0].isUser && ttsReady) {
-            tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                override fun onStart(utteranceId: String?) {}
-                override fun onDone(utteranceId: String?) {
-                    viewModel.onSpeakingDone()
-                }
-                @Deprecated("Deprecated in Java")
-                override fun onError(utteranceId: String?) {
-                    viewModel.onSpeakingDone()
-                }
-            })
             tts?.speak(messages[0].text, TextToSpeech.QUEUE_FLUSH, null, "greeting")
         }
     }
@@ -284,17 +302,20 @@ fun RealTimeConversationScreen(
             MicrophoneArea(
                 uiState = uiState,
                 onStartListening = {
-                    val permission = ContextCompat.checkSelfPermission(
-                        context, Manifest.permission.RECORD_AUDIO
-                    )
-                    if (permission == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        tts?.stop()
-                        viewModel.setListening()
-                        speechRecognizer?.setRecognitionListener(
-                            viewModel.createRecognitionListener()
-                        )
-                        speechRecognizer?.startListening(viewModel.createRecognizerIntent())
+                    if (!hasMicPermission) {
+                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                        return@MicrophoneArea
                     }
+                    if (!speechAvailable) {
+                        Toast.makeText(context, "此裝置不支援語音辨識", Toast.LENGTH_SHORT).show()
+                        return@MicrophoneArea
+                    }
+                    tts?.stop()
+                    viewModel.setListening()
+                    speechRecognizer?.setRecognitionListener(
+                        viewModel.createRecognitionListener()
+                    )
+                    speechRecognizer?.startListening(viewModel.createRecognizerIntent())
                 },
                 onStopListening = {
                     speechRecognizer?.stopListening()

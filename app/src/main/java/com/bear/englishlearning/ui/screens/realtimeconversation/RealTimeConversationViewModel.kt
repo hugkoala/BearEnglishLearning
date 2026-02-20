@@ -11,10 +11,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
+private val messageIdCounter = AtomicLong(System.currentTimeMillis())
+
 data class ChatMessage(
-    val id: Long = System.currentTimeMillis(),
+    val id: Long = messageIdCounter.getAndIncrement(),
     val text: String,
     val textZh: String = "",
     val isUser: Boolean,

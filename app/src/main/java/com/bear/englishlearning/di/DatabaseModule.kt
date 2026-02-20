@@ -6,6 +6,7 @@ import com.bear.englishlearning.data.local.AppDatabase
 import com.bear.englishlearning.data.local.SeedDatabaseCallback
 import com.bear.englishlearning.data.local.dao.CachedVideoDao
 import com.bear.englishlearning.data.local.dao.ConversationDao
+import com.bear.englishlearning.data.local.dao.CustomWordDao
 import com.bear.englishlearning.data.local.dao.DailyTaskDao
 import com.bear.englishlearning.data.local.dao.MemoDao
 import com.bear.englishlearning.data.local.dao.PracticeHistoryDao
@@ -63,4 +64,7 @@ object DatabaseModule {
 
     @Provides
     fun provideConversationDao(db: AppDatabase): ConversationDao = db.conversationDao()
+
+    @Provides
+    fun provideCustomWordDao(db: AppDatabase): CustomWordDao = db.customWordDao()
 }

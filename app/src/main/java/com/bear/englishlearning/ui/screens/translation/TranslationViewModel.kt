@@ -2,6 +2,7 @@ package com.bear.englishlearning.ui.screens.translation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bear.englishlearning.data.repository.ExampleSentence
 import com.bear.englishlearning.data.repository.TranslationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -38,7 +39,11 @@ val supportedLanguages = listOf(
 sealed interface TranslationUiState {
     data object Idle : TranslationUiState
     data object Loading : TranslationUiState
-    data class Success(val result: String) : TranslationUiState
+    data class Success(
+        val result: String,
+        val alternativeMeanings: List<String> = emptyList(),
+        val exampleSentences: List<ExampleSentence> = emptyList()
+    ) : TranslationUiState
     data class Error(val message: String) : TranslationUiState
 }
 
@@ -104,15 +109,19 @@ class TranslationViewModel @Inject constructor(
                 targetLang = current.targetLang.code
             )
             result.fold(
-                onSuccess = { translated ->
+                onSuccess = { translationResult ->
                     val historyItem = TranslationHistoryItem(
                         sourceText = current.inputText,
-                        translatedText = translated,
+                        translatedText = translationResult.translatedText,
                         sourceLang = current.sourceLang,
                         targetLang = current.targetLang
                     )
                     _state.value = _state.value.copy(
-                        uiState = TranslationUiState.Success(translated),
+                        uiState = TranslationUiState.Success(
+                            result = translationResult.translatedText,
+                            alternativeMeanings = translationResult.alternativeMeanings,
+                            exampleSentences = translationResult.exampleSentences
+                        ),
                         history = listOf(historyItem) + _state.value.history.take(19)
                     )
                 },

@@ -1,6 +1,7 @@
 package com.bear.englishlearning.ui.screens.translation
 
 import android.speech.tts.TextToSpeech
+import com.bear.englishlearning.data.repository.ExampleSentence
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,6 +36,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -202,8 +204,11 @@ fun TranslationScreen(
                         TranslationResultCard(
                             result = ui.result,
                             targetLang = state.targetLang,
+                            sourceLang = state.sourceLang,
                             tts = tts,
                             ttsReady = ttsReady,
+                            alternativeMeanings = ui.alternativeMeanings,
+                            exampleSentences = ui.exampleSentences,
                             onCopy = {
                                 clipboardManager.setText(AnnotatedString(ui.result))
                             }
@@ -369,8 +374,11 @@ private fun LanguageDropdown(
 private fun TranslationResultCard(
     result: String,
     targetLang: Language,
+    sourceLang: Language,
     tts: TextToSpeech?,
     ttsReady: Boolean,
+    alternativeMeanings: List<String>,
+    exampleSentences: List<ExampleSentence>,
     onCopy: () -> Unit
 ) {
     Card(
@@ -384,6 +392,7 @@ private fun TranslationResultCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            // Main translation header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -396,7 +405,6 @@ private fun TranslationResultCard(
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Row {
-                    // TTS button
                     IconButton(
                         onClick = {
                             if (ttsReady) {
@@ -415,7 +423,6 @@ private fun TranslationResultCard(
                             modifier = Modifier.size(20.dp)
                         )
                     }
-                    // Copy button
                     IconButton(
                         onClick = onCopy,
                         modifier = Modifier.size(36.dp)
@@ -438,6 +445,169 @@ private fun TranslationResultCard(
                 lineHeight = 28.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
+
+            // Alternative meanings section
+            if (alternativeMeanings.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "\uD83D\uDCD6 其他翻譯",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                alternativeMeanings.forEachIndexed { index, meaning ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${index + 1}.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.width(24.dp)
+                        )
+                        Text(
+                            text = meaning,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.weight(1f)
+                        )
+                        IconButton(
+                            onClick = {
+                                if (ttsReady) {
+                                    val locale = langCodeToLocale(targetLang.code)
+                                    tts?.setLanguage(locale)
+                                    tts?.setSpeechRate(0.9f)
+                                    tts?.speak(meaning, TextToSpeech.QUEUE_FLUSH, null, "alt_tts_$index")
+                                }
+                            },
+                            enabled = ttsReady,
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.VolumeUp,
+                                contentDescription = "播放",
+                                modifier = Modifier.size(16.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Example sentences section
+            if (exampleSentences.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "\uD83D\uDCAC 例句",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                exampleSentences.forEachIndexed { index, example ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(12.dp)
+                        ) {
+                            // Source sentence
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${sourceLang.flag} ",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                                Text(
+                                    text = example.source,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                IconButton(
+                                    onClick = {
+                                        if (ttsReady) {
+                                            val locale = langCodeToLocale(sourceLang.code)
+                                            tts?.setLanguage(locale)
+                                            tts?.setSpeechRate(0.85f)
+                                            tts?.speak(example.source, TextToSpeech.QUEUE_FLUSH, null, "ex_src_$index")
+                                        }
+                                    },
+                                    enabled = ttsReady,
+                                    modifier = Modifier.size(28.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.VolumeUp,
+                                        contentDescription = "播放原文",
+                                        modifier = Modifier.size(14.dp),
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                            // Translated sentence
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${targetLang.flag} ",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                                Text(
+                                    text = example.translation,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                IconButton(
+                                    onClick = {
+                                        if (ttsReady) {
+                                            val locale = langCodeToLocale(targetLang.code)
+                                            tts?.setLanguage(locale)
+                                            tts?.setSpeechRate(0.85f)
+                                            tts?.speak(example.translation, TextToSpeech.QUEUE_FLUSH, null, "ex_tgt_$index")
+                                        }
+                                    },
+                                    enabled = ttsReady,
+                                    modifier = Modifier.size(28.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.VolumeUp,
+                                        contentDescription = "播放翻譯",
+                                        modifier = Modifier.size(14.dp),
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -134,17 +134,29 @@ private fun MainAppContent() {
                 DailyTaskScreen(
                     onNavigateToListening = {
                         navController.navigate(Screen.ListeningQuiz.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     },
                     onNavigateToVocabulary = {
                         navController.navigate(Screen.Vocabulary.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     },
                     onNavigateToConversation = {
                         navController.navigate(Screen.Conversation.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
                             launchSingleTop = true
+                            restoreState = true
                         }
                     },
                     onNavigateToSettings = {

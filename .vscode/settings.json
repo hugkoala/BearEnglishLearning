@@ -7,6 +7,26 @@
         "/^sleep 120 && cd /home/leogodone/workspace/BearEnglishLearning && python3 upload_to_drive\\.py 2>&1$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^cd /home/leogodone/workspace/BearEnglishLearning && python3 upload_to_drive\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^sleep 120 && cd /home/leogodone/workspace/BearEnglishLearning && python3 upload_to_drive\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cd /home/leogodone/workspace/BearEnglishLearning && python3 -c \"\nline = open\\('app/src/main/java/com/bear/englishlearning/domain/conversation/ConversationEngine\\.kt'\\)\\.readlines\\(\\)\\[198\\]\nprint\\(repr\\(line\\[105:120\\]\\)\\)\nprint\\('char at 109:', repr\\(line\\[109\\]\\)\\)\n\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cd /home/leogodone/workspace/BearEnglishLearning && python3 -c \"\nlines = open\\('app/src/main/java/com/bear/englishlearning/domain/conversation/ConversationEngine\\.kt'\\)\\.readlines\\(\\)\n# Check if any lines have unescaped dollar signs followed by identifiers\nimport re\nfor i, line in enumerate\\(lines\\):\n    # Look for \\$ followed by letter \\(which Kotlin interprets as string template\\)\n    matches = re\\.finditer\\(r'\\\\\\\\\\\\\\$\\(\\?=\\[a-zA-Z_\\]\\)', line\\)\n    for m in matches:\n        print\\(f'Line \\{i\\+1\\}, col \\{m\\.start\\(\\)\\}: \\{line\\[max\\(0,m\\.start\\(\\)-5\\):m\\.start\\(\\)\\+10\\]\\}'\\)\n\" 2>&1 \\| head -20$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cd /home/leogodone/workspace/BearEnglishLearning && python3 -c \"\nlines = open\\('app/src/main/java/com/bear/englishlearning/domain/conversation/ConversationEngine\\.kt', encoding='utf-8'\\)\\.readlines\\(\\)\nline = lines\\[198\\]  # 0-indexed, so line 199\nprint\\(f'Length: \\{len\\(line\\)\\} chars'\\)\n\n# Character at col 110 \\(1-indexed = char at index 109\\)\n# But Kotlin counts columns differently for multi-byte chars\n# Let's find all dollar signs\nfor i, c in enumerate\\(line\\):\n    if c == '\\\\\\$':\n        print\\(f'Dollar sign at position \\{i\\}: \\.\\.\\.\\{line\\[max\\(0,i-5\\):i\\+10\\]\\}\\.\\.\\.'\\)\n\"$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

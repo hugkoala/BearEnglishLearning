@@ -31,6 +31,7 @@ import com.bear.englishlearning.ui.MainViewModel
 import com.bear.englishlearning.ui.screens.conversation.ConversationScreen
 import com.bear.englishlearning.ui.screens.dailytask.DailyTaskScreen
 import com.bear.englishlearning.ui.screens.listening.ListeningQuizScreen
+import com.bear.englishlearning.ui.screens.realtimeconversation.RealTimeConversationScreen
 import com.bear.englishlearning.ui.screens.memo.MemoListScreen
 import com.bear.englishlearning.ui.screens.memo.MemoScreen
 import com.bear.englishlearning.ui.screens.onboarding.OnboardingScreen
@@ -47,6 +48,7 @@ sealed class Screen(val route: String, val label: String) {
     data object MemoList : Screen("memo_list", "備忘錄")
     data object MemoCreate : Screen("memo_create", "新增備忘")
     data object Review : Screen("review", "複習")
+    data object RealTimeConversation : Screen("realtime_conversation", "即時對話")
     data object Settings : Screen("settings", "設定")
 }
 
@@ -154,7 +156,16 @@ private fun MainAppContent() {
                 ListeningQuizScreen()
             }
             composable(Screen.Conversation.route) {
-                ConversationScreen()
+                ConversationScreen(
+                    onNavigateToRealTime = {
+                        navController.navigate(Screen.RealTimeConversation.route)
+                    }
+                )
+            }
+            composable(Screen.RealTimeConversation.route) {
+                RealTimeConversationScreen(
+                    onBack = { navController.popBackStack() }
+                )
             }
             composable(Screen.Vocabulary.route) {
                 VocabularyScreen()

@@ -59,6 +59,7 @@ import com.bear.englishlearning.ui.components.BearIcon
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationScreen(
+    onNavigateToRealTime: () -> Unit = {},
     viewModel: ConversationViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -139,6 +140,15 @@ fun ConversationScreen(
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         selectedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                )
+                FilterChip(
+                    selected = false,
+                    onClick = onNavigateToRealTime,
+                    label = { Text("🗣️ 即時對話") },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.7f),
+                        labelColor = MaterialTheme.colorScheme.onErrorContainer
                     )
                 )
             }

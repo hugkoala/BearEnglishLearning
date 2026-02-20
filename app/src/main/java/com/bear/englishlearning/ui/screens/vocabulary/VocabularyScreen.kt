@@ -1,5 +1,6 @@
 package com.bear.englishlearning.ui.screens.vocabulary
 
+import android.speech.tts.TextToSpeech
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -24,7 +25,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SlowMotionVideo
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,10 +41,15 @@ import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
@@ -53,6 +61,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bear.englishlearning.domain.vocabulary.VocabularyWord
 import com.bear.englishlearning.ui.components.BearIcon
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +69,20 @@ fun VocabularyScreen(
     viewModel: VocabularyViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    var tts by remember { mutableStateOf<TextToSpeech?>(null) }
+    var ttsReady by remember { mutableStateOf(false) }
+
+    DisposableEffect(Unit) {
+        tts = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                tts?.setLanguage(Locale.US)
+                ttsReady = true
+            }
+        }
+        onDispose { tts?.shutdown() }
+    }
 
     Scaffold(
         topBar = {
@@ -124,7 +147,9 @@ fun VocabularyScreen(
                         word = word,
                         index = index + 1,
                         isExpanded = uiState.expandedIndex == index,
-                        onToggle = { viewModel.toggleExpanded(index) }
+                        onToggle = { viewModel.toggleExpanded(index) },
+                        tts = tts,
+                        ttsReady = ttsReady
                     )
                 }
             }
@@ -137,7 +162,9 @@ private fun VocabularyWordCard(
     word: VocabularyWord,
     index: Int,
     isExpanded: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    tts: TextToSpeech?,
+    ttsReady: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -204,6 +231,25 @@ private fun VocabularyWordCard(
                         text = word.phonetic,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                // Speaker button
+                IconButton(
+                    onClick = {
+                        if (ttsReady) {
+                            tts?.setSpeechRate(0.9f)
+                            tts?.speak(word.word, TextToSpeech.QUEUE_FLUSH, null, "word_${word.word}")
+                        }
+                    },
+                    enabled = ttsReady,
+                    modifier = Modifier.size(36.dp)
+                ) {
+                    Icon(
+                        Icons.Default.VolumeUp,
+                        contentDescription = "播放發音",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
@@ -309,6 +355,50 @@ private fun VocabularyWordCard(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontStyle = FontStyle.Italic
                             )
+                            // TTS buttons for example sentence
+                            Row(
+                                modifier = Modifier.padding(top = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        if (ttsReady) {
+                                            tts?.setSpeechRate(0.7f)
+                                            tts?.speak(word.exampleSentence, TextToSpeech.QUEUE_FLUSH, null, "example_slow")
+                                        }
+                                    },
+                                    enabled = ttsReady,
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.SlowMotionVideo,
+                                        contentDescription = "慢速播放例句",
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {
+                                        if (ttsReady) {
+                                            tts?.setSpeechRate(1.0f)
+                                            tts?.speak(word.exampleSentence, TextToSpeech.QUEUE_FLUSH, null, "example_normal")
+                                        }
+                                    },
+                                    enabled = ttsReady,
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.PlayArrow,
+                                        contentDescription = "正常速度播放例句",
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "播放例句",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
                 }

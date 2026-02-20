@@ -4,6 +4,27 @@ All notable changes to BearEnglishLearning are documented here.
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-02-20
+
+### Added
+- **即時對話 (Real-Time Conversation)**: Voice-based English conversation practice
+  - Speak into microphone → phone replies with TTS → chat-style UI
+  - 8 conversation topics: cafe, hotel, shopping, restaurant, directions, doctor, airport, daily
+  - `ConversationEngine`: keyword-matching reply system with Chinese translations
+  - Real-time speech recognition with partial results display
+  - Chat bubble UI with pulse animation on mic button
+  - Tap any message to hear it spoken aloud
+  - Translation toggle (show/hide Chinese)
+  - Accessible via "🗣️ 即時對話" chip in Conversation screen
+
+## [1.3.0] — 2026-02-20
+
+### Added
+- **每日任務 Quick Access**: Vocabulary, listening, and conversation preview cards on Daily Task screen
+  - Vocabulary preview: 3 daily words with TTS playback
+  - Listening quick card: one-tap navigation to listening quiz
+  - Conversation preview: today's topic with 2 sample dialogue lines
+
 ## [1.2.0] — 2026-02-19
 
 ### Changed

@@ -4,6 +4,19 @@ All notable changes to BearEnglishLearning are documented here.
 
 ## [Unreleased]
 
+## [1.4.1] — 2026-02-20
+
+### Fixed
+- **Bottom Navigation**: Tapping bottom tab (e.g. 每日任務) now correctly switches back after cross-tab navigation from Daily Task quick-access cards (vocabulary, listening, conversation)
+  - Cross-tab shortcuts now use `popUpTo(startDestination) + saveState + restoreState` pattern
+
+### Changed
+- **Version Config**: APK naming and version now driven by `version.properties`
+  - `VERSION_MAJOR`, `VERSION_MINOR`, `VERSION_PATCH` → auto-compute `versionName` and `versionCode`
+  - `APP_NAME` controls APK filename prefix
+  - APK format: `{APP_NAME}-{variant}-v{versionName}-{timestamp}.apk`
+  - No more hardcoded version in `build.gradle.kts`
+
 ## [1.4.0] — 2026-02-20
 
 ### Added

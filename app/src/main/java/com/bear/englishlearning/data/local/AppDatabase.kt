@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.bear.englishlearning.data.local.dao.CachedVideoDao
 import com.bear.englishlearning.data.local.dao.ConversationDao
 import com.bear.englishlearning.data.local.dao.CustomWordDao
+import com.bear.englishlearning.data.local.dao.DailyProgressDao
 import com.bear.englishlearning.data.local.dao.DailyTaskDao
 import com.bear.englishlearning.data.local.dao.MemoDao
 import com.bear.englishlearning.data.local.dao.PracticeHistoryDao
@@ -13,6 +14,7 @@ import com.bear.englishlearning.data.local.entity.CachedVideo
 import com.bear.englishlearning.data.local.entity.Conversation
 import com.bear.englishlearning.data.local.entity.ConversationLine
 import com.bear.englishlearning.data.local.entity.CustomWord
+import com.bear.englishlearning.data.local.entity.DailyProgress
 import com.bear.englishlearning.data.local.entity.DailyTask
 import com.bear.englishlearning.data.local.entity.Memo
 import com.bear.englishlearning.data.local.entity.PracticeHistory
@@ -29,9 +31,10 @@ import com.bear.englishlearning.data.local.entity.Sentence
         CachedVideo::class,
         Conversation::class,
         ConversationLine::class,
-        CustomWord::class
+        CustomWord::class,
+        DailyProgress::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -42,4 +45,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun cachedVideoDao(): CachedVideoDao
     abstract fun conversationDao(): ConversationDao
     abstract fun customWordDao(): CustomWordDao
+    abstract fun dailyProgressDao(): DailyProgressDao
 }

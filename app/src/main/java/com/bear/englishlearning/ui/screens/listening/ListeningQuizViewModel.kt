@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.bear.englishlearning.data.local.entity.PracticeHistory
 import com.bear.englishlearning.data.local.entity.Scenario
 import com.bear.englishlearning.data.local.entity.Sentence
+import com.bear.englishlearning.data.repository.DailyProgressRepository
 import com.bear.englishlearning.data.repository.DailyTaskRepository
 import com.bear.englishlearning.data.repository.PracticeRepository
 import com.bear.englishlearning.data.repository.Resource
@@ -48,7 +49,8 @@ class ListeningQuizViewModel @Inject constructor(
     private val scenarioRepository: ScenarioRepository,
     private val dailyTaskRepository: DailyTaskRepository,
     private val youTubeRepository: YouTubeRepository,
-    private val practiceRepository: PracticeRepository
+    private val practiceRepository: PracticeRepository,
+    private val dailyProgressRepository: DailyProgressRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ListeningQuizUiState())
@@ -186,6 +188,7 @@ class ListeningQuizViewModel @Inject constructor(
                                 timestamp = System.currentTimeMillis()
                             )
                         )
+                        dailyProgressRepository.recordListeningQuiz()
                     }
                 } else {
                     _uiState.update { it.copy(isListening = false) }

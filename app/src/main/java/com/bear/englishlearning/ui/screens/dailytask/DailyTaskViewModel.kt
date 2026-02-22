@@ -6,6 +6,7 @@ import com.bear.englishlearning.data.local.entity.DailyTask
 import com.bear.englishlearning.data.local.entity.Scenario
 import com.bear.englishlearning.data.local.entity.Sentence
 import com.bear.englishlearning.data.preferences.AppPreferences
+import com.bear.englishlearning.data.repository.DailyProgressRepository
 import com.bear.englishlearning.data.repository.DailyTaskRepository
 import com.bear.englishlearning.data.repository.ScenarioRepository
 import com.bear.englishlearning.domain.conversation.GeneratedConversation
@@ -53,7 +54,8 @@ class DailyTaskViewModel @Inject constructor(
     private val appPreferences: AppPreferences,
     private val dailyScenarioGenerator: DailyScenarioGenerator,
     private val dailyVocabularyGenerator: DailyVocabularyGenerator,
-    private val randomConversationGenerator: RandomConversationGenerator
+    private val randomConversationGenerator: RandomConversationGenerator,
+    private val dailyProgressRepository: DailyProgressRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<DailyTaskUiState>(DailyTaskUiState.Loading)
@@ -173,6 +175,7 @@ class DailyTaskViewModel @Inject constructor(
                 _uiState.value = state.copy(
                     task = state.task.copy(isCompleted = true, completedAt = System.currentTimeMillis())
                 )
+                dailyProgressRepository.recordSentencePractice(state.sentences.size)
             }
         }
     }

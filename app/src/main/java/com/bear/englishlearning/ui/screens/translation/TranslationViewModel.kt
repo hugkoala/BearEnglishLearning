@@ -2,6 +2,7 @@ package com.bear.englishlearning.ui.screens.translation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bear.englishlearning.data.repository.DailyProgressRepository
 import com.bear.englishlearning.data.repository.ExampleSentence
 import com.bear.englishlearning.data.repository.TranslationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,7 +65,8 @@ data class TranslationHistoryItem(
 
 @HiltViewModel
 class TranslationViewModel @Inject constructor(
-    private val repository: TranslationRepository
+    private val repository: TranslationRepository,
+    private val dailyProgressRepository: DailyProgressRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TranslationScreenState())
@@ -124,6 +126,7 @@ class TranslationViewModel @Inject constructor(
                         ),
                         history = listOf(historyItem) + _state.value.history.take(19)
                     )
+                    dailyProgressRepository.recordTranslation()
                 },
                 onFailure = { error ->
                     _state.value = _state.value.copy(

@@ -6,8 +6,11 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bear.englishlearning.data.repository.DailyProgressRepository
 import com.bear.englishlearning.domain.conversation.ConversationEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,7 +36,8 @@ sealed interface RealTimeConversationUiState {
 
 @HiltViewModel
 class RealTimeConversationViewModel @Inject constructor(
-    private val conversationEngine: ConversationEngine
+    private val conversationEngine: ConversationEngine,
+    private val dailyProgressRepository: DailyProgressRepository
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
@@ -114,6 +118,7 @@ class RealTimeConversationViewModel @Inject constructor(
         )
         _messages.value = _messages.value + replyMessage
         _uiState.value = RealTimeConversationUiState.Speaking
+        viewModelScope.launch { dailyProgressRepository.recordConversationTurn() }
     }
 
     fun onSpeakingDone() {

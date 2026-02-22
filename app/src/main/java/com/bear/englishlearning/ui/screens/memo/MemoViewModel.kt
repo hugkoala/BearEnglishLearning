@@ -3,6 +3,7 @@ package com.bear.englishlearning.ui.screens.memo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bear.englishlearning.data.local.entity.Memo
+import com.bear.englishlearning.data.repository.DailyProgressRepository
 import com.bear.englishlearning.data.repository.MemoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemoViewModel @Inject constructor(
-    private val memoRepository: MemoRepository
+    private val memoRepository: MemoRepository,
+    private val dailyProgressRepository: DailyProgressRepository
 ) : ViewModel() {
 
     val allMemos: StateFlow<List<Memo>> = memoRepository.getAllMemos()
@@ -45,6 +47,7 @@ class MemoViewModel @Inject constructor(
                 nextReviewAt = tomorrow9am
             )
             memoRepository.insertMemo(memo)
+            dailyProgressRepository.recordMemoCreated()
             _saveSuccess.value = true
         }
     }

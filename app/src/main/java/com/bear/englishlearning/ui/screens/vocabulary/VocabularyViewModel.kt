@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bear.englishlearning.data.local.entity.CustomWord
 import com.bear.englishlearning.data.repository.CustomWordRepository
+import com.bear.englishlearning.data.repository.DailyProgressRepository
 import com.bear.englishlearning.domain.vocabulary.DailyVocabularyGenerator
 import com.bear.englishlearning.domain.vocabulary.VocabularyWord
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +31,8 @@ data class VocabularyUiState(
 @HiltViewModel
 class VocabularyViewModel @Inject constructor(
     private val generator: DailyVocabularyGenerator,
-    private val customWordRepository: CustomWordRepository
+    private val customWordRepository: CustomWordRepository,
+    private val dailyProgressRepository: DailyProgressRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(VocabularyUiState())
@@ -51,6 +53,7 @@ class VocabularyViewModel @Inject constructor(
             dateLabel = label,
             expandedIndex = null
         )
+        viewModelScope.launch { dailyProgressRepository.recordVocabularyLearned(words.size) }
     }
 
     private fun loadCustomWords() {

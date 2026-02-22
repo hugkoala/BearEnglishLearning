@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.SlowMotionVideo
 import androidx.compose.material.icons.filled.Spellcheck
 import androidx.compose.material.icons.filled.VolumeUp
@@ -61,6 +62,7 @@ fun DailyTaskScreen(
     onNavigateToListening: () -> Unit = {},
     onNavigateToVocabulary: () -> Unit = {},
     onNavigateToConversation: () -> Unit = {},
+    onNavigateToCalendar: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
     viewModel: DailyTaskViewModel = hiltViewModel()
 ) {
@@ -125,6 +127,7 @@ fun DailyTaskScreen(
                     onNavigateToListening = onNavigateToListening,
                     onNavigateToVocabulary = onNavigateToVocabulary,
                     onNavigateToConversation = onNavigateToConversation,
+                    onNavigateToCalendar = onNavigateToCalendar,
                     onNavigateToSettings = onNavigateToSettings
                 )
             }
@@ -138,6 +141,7 @@ fun DailyTaskScreen(
                     onNavigateToListening = onNavigateToListening,
                     onNavigateToVocabulary = onNavigateToVocabulary,
                     onNavigateToConversation = onNavigateToConversation,
+                    onNavigateToCalendar = onNavigateToCalendar,
                     onNavigateToSettings = onNavigateToSettings
                 )
             }
@@ -156,6 +160,7 @@ private fun PresetTaskContent(
     onNavigateToListening: () -> Unit,
     onNavigateToVocabulary: () -> Unit,
     onNavigateToConversation: () -> Unit,
+    onNavigateToCalendar: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
     LazyColumn(
@@ -181,6 +186,9 @@ private fun PresetTaskContent(
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold
                         )
+                    }
+                    IconButton(onClick = onNavigateToCalendar) {
+                        Icon(Icons.Default.CalendarMonth, contentDescription = "學習日曆")
                     }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(Icons.Default.Settings, contentDescription = "設定")
@@ -273,6 +281,7 @@ private fun GeneratedTaskContent(
     onNavigateToListening: () -> Unit,
     onNavigateToVocabulary: () -> Unit,
     onNavigateToConversation: () -> Unit,
+    onNavigateToCalendar: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
     val sentences = state.generatedScenario.sentences.take(state.sentenceCount)
@@ -300,6 +309,9 @@ private fun GeneratedTaskContent(
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold
                         )
+                    }
+                    IconButton(onClick = onNavigateToCalendar) {
+                        Icon(Icons.Default.CalendarMonth, contentDescription = "學習日曆")
                     }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(Icons.Default.Settings, contentDescription = "設定")

@@ -27,6 +27,8 @@
         "/^cd /home/leogodone/workspace/BearEnglishLearning && python3 -c \"\nlines = open\\('app/src/main/java/com/bear/englishlearning/domain/conversation/ConversationEngine\\.kt', encoding='utf-8'\\)\\.readlines\\(\\)\nline = lines\\[198\\]  # 0-indexed, so line 199\nprint\\(f'Length: \\{len\\(line\\)\\} chars'\\)\n\n# Character at col 110 \\(1-indexed = char at index 109\\)\n# But Kotlin counts columns differently for multi-byte chars\n# Let's find all dollar signs\nfor i, c in enumerate\\(line\\):\n    if c == '\\\\\\$':\n        print\\(f'Dollar sign at position \\{i\\}: \\.\\.\\.\\{line\\[max\\(0,i-5\\):i\\+10\\]\\}\\.\\.\\.'\\)\n\"$/": {
             "approve": true,
             "matchCommandLine": true
-        }
+        },
+        "./gradlew": true,
+        "git add": true
     }
 }

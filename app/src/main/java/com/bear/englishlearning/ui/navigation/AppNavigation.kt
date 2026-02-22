@@ -39,6 +39,7 @@ import com.bear.englishlearning.ui.screens.onboarding.OnboardingScreen
 import com.bear.englishlearning.ui.screens.review.ReviewScreen
 import com.bear.englishlearning.ui.screens.settings.SettingsScreen
 import com.bear.englishlearning.ui.screens.translation.TranslationScreen
+import com.bear.englishlearning.ui.screens.calendar.CalendarScreen
 import com.bear.englishlearning.ui.screens.vocabulary.VocabularyScreen
 
 sealed class Screen(val route: String, val label: String) {
@@ -52,6 +53,7 @@ sealed class Screen(val route: String, val label: String) {
     data object Review : Screen("review", "複習")
     data object RealTimeConversation : Screen("realtime_conversation", "即時對話")
     data object Translation : Screen("translation", "翻譯")
+    data object Calendar : Screen("calendar", "學習日曆")
     data object Settings : Screen("settings", "設定")
 }
 
@@ -164,6 +166,9 @@ private fun MainAppContent() {
                             restoreState = true
                         }
                     },
+                    onNavigateToCalendar = {
+                        navController.navigate(Screen.Calendar.route)
+                    },
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route)
                     }
@@ -204,6 +209,9 @@ private fun MainAppContent() {
             }
             composable(Screen.Translation.route) {
                 TranslationScreen()
+            }
+            composable(Screen.Calendar.route) {
+                CalendarScreen(onBack = { navController.popBackStack() })
             }
         }
     }

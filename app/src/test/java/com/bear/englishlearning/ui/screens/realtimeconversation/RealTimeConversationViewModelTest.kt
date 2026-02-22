@@ -1,8 +1,13 @@
 package com.bear.englishlearning.ui.screens.realtimeconversation
 
+import com.bear.englishlearning.data.local.dao.DailyProgressDao
+import com.bear.englishlearning.data.local.entity.DailyProgress
+import com.bear.englishlearning.data.repository.DailyProgressRepository
 import com.bear.englishlearning.domain.conversation.ConversationEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -10,6 +15,25 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+
+/** No-op DAO stub for unit tests */
+private class FakeDailyProgressDao : DailyProgressDao {
+    override suspend fun getProgressByDate(date: String): DailyProgress? =
+        DailyProgress(date = date)
+    override suspend fun getProgressRange(startDate: String, endDate: String) = emptyList<DailyProgress>()
+    override fun getProgressRangeFlow(startDate: String, endDate: String): Flow<List<DailyProgress>> = flowOf(emptyList())
+    override suspend fun upsertProgress(progress: DailyProgress): Long = 1L
+    override suspend fun incrementSentences(date: String, count: Int, ts: Long) {}
+    override suspend fun incrementVocabulary(date: String, count: Int, ts: Long) {}
+    override suspend fun incrementConversation(date: String, count: Int, ts: Long) {}
+    override suspend fun incrementListening(date: String, count: Int, ts: Long) {}
+    override suspend fun incrementMemos(date: String, count: Int, ts: Long) {}
+    override suspend fun incrementTranslations(date: String, count: Int, ts: Long) {}
+    override suspend fun incrementStudyMinutes(date: String, minutes: Int, ts: Long) {}
+    override suspend fun getTotalActiveDays(): Int = 0
+    override suspend fun getLatestProgress(): DailyProgress? = null
+    override suspend fun getAllProgress(): List<DailyProgress> = emptyList()
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RealTimeConversationViewModelTest {
@@ -22,7 +46,8 @@ class RealTimeConversationViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         engine = ConversationEngine()
-        viewModel = RealTimeConversationViewModel(engine)
+        val progressRepository = DailyProgressRepository(FakeDailyProgressDao())
+        viewModel = RealTimeConversationViewModel(engine, progressRepository)
     }
 
     @After
